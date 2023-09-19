@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data() {
     return {
@@ -21,6 +21,7 @@ export default {
       this.messages.push({
         username: message.username,
         message: message.message,
+        id: message.id,
       });
     });
   },
@@ -32,6 +33,10 @@ export default {
         this.newMessage = '';
       }
     },
+  },
+
+  beforeDestroy() {
+    this.$socket.close();
   },
 };
 </script>
