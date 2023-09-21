@@ -1,14 +1,62 @@
--- User Table
-CREATE TABLE profile (
-  id UUID PRIMARY KEY,
-  username VARCHAR(100) NOT NULL,
-  password VARCHAR(1000) NOT NULL,
-  status ENUM('online', 'offline', 'away', 'busy') NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+-- "User Status" Table
+CREATE TABLE profile_status (
+  profile_status_name VARCHAR(50) PRIMARY KEY
 );
 
--- Room Table
+INSERT INTO profile_status (profile_status_name) VALUES 
+('online'), 
+('offline'), 
+('away'), 
+('busy');
+
+-- "User Relation Status" Table
+CREATE TABLE profile_relation_status (
+  relation_status_name VARCHAR(50) PRIMARY KEY
+);
+
+INSERT INTO profile_relation_status (relation_status_name) VALUES 
+('pending'), 
+('friend'), 
+('blocked'), 
+('ignored'), 
+('requested');
+
+-- "Room Status" Table
+CREATE TABLE room_status (
+  room_status_name VARCHAR(50) PRIMARY KEY
+);
+
+INSERT INTO room_status (room_status_name) VALUES 
+('pending'), 
+('member'), 
+('blocked'), 
+('ignored'), 
+('admin'), 
+('owner');
+
+-- "Message Status" Table
+CREATE TABLE message_status (
+  message_status_name VARCHAR(50) PRIMARY KEY
+);
+
+INSERT INTO message_status (message_status_name) VALUES 
+('pending'), 
+('sent'), 
+('delivered'), 
+('read');
+
+-- "User "Table
+CREATE TABLE profile (
+  -- this is the username
+  id VARCHAR(100) PRIMARY KEY,
+  hashed_password VARCHAR(1000) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+  status VARCHAR(50) NOT NULL DEFAULT 'offline',
+  FOREIGN KEY (status) REFERENCES profile_status (status_name)
+);
+
+-- "Room" Table
 CREATE TABLE room (
   id UUID PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -16,51 +64,73 @@ CREATE TABLE room (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Message Table
+-- "Message" Table
 CREATE TABLE message (
   id UUID PRIMARY KEY,
-  profile_id UUID NOT NULL,
+  profile_id VARCHAR(100) NOT NULL,
   room_id UUID NOT NULL,
   body VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
   FOREIGN KEY (profile_id) REFERENCES profile (id),
-  FOREIGN KEY (room_id) REFERENCES room (id)
+  FOREIGN KEY (room_id) REFERENCES room (id),
+  FOREIGN KEY (status) REFERENCES message_status (status_name)
 );
 
--- User Status on a Room Table
+-- "User Status on a Room" Table
 CREATE TABLE profile_room (
-  profile_id UUID NOT NULL,
+  profile_id VARCHAR(100) NOT NULL,
   room_id UUID NOT NULL,
-  status ENUM('pending', 'member', 'blocked', 'ignored', 'admin', 'owner') NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (profile_id, room_id),
   FOREIGN KEY (profile_id) REFERENCES profile (id),
-  FOREIGN KEY (room_id) REFERENCES room (id)
+  FOREIGN KEY (room_id) REFERENCES room (id),
+  FOREIGN KEY (status) REFERENCES room_status (status_name)
 );
 
+-- "User Relation" Table
 CREATE TABLE profile_relation (
-  from_profile_id UUID NOT NULL,
-  to_profile_id UUID NOT NULL,
-  status ENUM('pending', 'friend', 'blocked', 'ignored', 'requested') NOT NULL,
-  PRIMARY KEY (from_profile_id, to_profile_id),
-  FOREIGN KEY (from_profile_id) REFERENCES profile (id),
-  FOREIGN KEY (to_profile_id) REFERENCES profile (id)
+  requester_profile_id VARCHAR(100) NOT NULL,
+  receiver_profile_id VARCHAR(100) NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  PRIMARY KEY (requester_profile_id, receiver_profile_id),
+  FOREIGN KEY (requester_profile_id) REFERENCES profile (id),
+  FOREIGN KEY (receiver_profile_id) REFERENCES profile (id),
+  FOREIGN KEY (status) REFERENCES profile_relation_status (status_name)
 );
 
-DELIMITER //
-CREATE TRIGGER before_profile_insert
-BEFORE INSERT ON profile
-FOR EACH ROW
-BEGIN
-  SET NEW.id = UUID();
-END;
-//
-
+-- "Updated At" Triggers
 CREATE TRIGGER profile_updated_at 
 BEFORE UPDATE ON profile 
 FOR EACH ROW 
 BEGIN
   SET NEW.updated_at = NOW();
+END;
+//
+
+CREATE TRIGGER message_updated_at
+BEFORE UPDATE ON message
+FOR EACH ROW
+  BEGIN
+    SET NEW.updated_at = NOW();
+END;
+//
+
+CREATE TRIGGER room_updated_at
+BEFORE UPDATE ON room
+FOR EACH ROW
+  BEGIN
+    SET NEW.updated_at = NOW();
+END;
+//
+
+-- "UUID" Triggers
+CREATE TRIGGER before_message_insert
+BEFORE INSERT ON message
+FOR EACH ROW
+  BEGIN
+    SET NEW.id = UUID();
 END;
 //
 
@@ -72,43 +142,19 @@ BEGIN
 END;
 //
 
-CREATE TRIGGER room_updated_at
-BEFORE UPDATE ON room
-FOR EACH ROW
-BEGIN
-  SET NEW.updated_at = NOW();
-END;
-//
-
-CREATE TRIGGER before_message_insert
-BEFORE INSERT ON message
-FOR EACH ROW
-BEGIN
-  SET NEW.id = UUID();
-END;
-//
-
-CREATE TRIGGER message_updated_at
-BEFORE UPDATE ON message
-FOR EACH ROW
-BEGIN
-  SET NEW.updated_at = NOW();
-END;
-//
-
 DELIMITER ;
 
-INSERT INTO profile (id, username, password, status) VALUES 
-  (UUID(), 'John', 'f29afg7p24', 'online'),
-  (UUID(), 'Jane', 'f29afg7p24', 'offline'),
-  (UUID(), 'Bob', 'f29afg7p24', 'away'),
-  (UUID(), 'Alice', 'f29afg7p24', 'busy'),
-  (UUID(), 'Eve', 'f29afg7p24', 'online'),
-  (UUID(), 'Mallory', 'f29afg7p24', 'offline'),
-  (UUID(), 'Trent', 'f29afg7p24', 'away'),
-  (UUID(), 'Carol', 'f29afg7p24', 'busy'),
-  (UUID(), 'Dave', 'f29afg7p24', 'online'),
-  (UUID(), 'Oscar', 'f29afg7p24', 'offline');
+INSERT INTO profile (username, password, status) VALUES 
+  ('John', 'f29afg7p24', 'online'),
+  ('Jane', 'f29afg7p24', 'offline'),
+  ('Bob', 'f29afg7p24', 'away'),
+  ('Alice', 'f29afg7p24', 'busy'),
+  ('Eve', 'f29afg7p24', 'online'),
+  ('Mallory', 'f29afg7p24', 'offline'),
+  ('Trent', 'f29afg7p24', 'away'),
+  ('Carol', 'f29afg7p24', 'busy'),
+  ('Dave', 'f29afg7p24', 'online'),
+  ('Oscar', 'f29afg7p24', 'offline');
 
 INSERT INTO room (id, name) VALUES
   (UUID(), 'General'),
@@ -169,7 +215,7 @@ INSERT INTO profile_room (profile_id, room_id, status) VALUES
   'owner'
 );
 
-INSERT INTO profile_relation (from_profile_id, to_profile_id, status) VALUES
+INSERT INTO profile_relation (requester_profile_id, receiver_profile_id, status) VALUES
 (
   (SELECT id FROM profile WHERE username = 'John'),
   (SELECT id FROM profile WHERE username = 'Jane'),
