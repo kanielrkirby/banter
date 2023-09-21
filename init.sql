@@ -117,46 +117,56 @@ INSERT INTO room (id, name) VALUES
   (UUID(), 'Programming'),
   (UUID(), 'Gaming');
 
-INSERT INTO profile_room (profile_id, room_id) VALUES
+INSERT INTO profile_room (profile_id, room_id, status) VALUES
 (
   (SELECT id FROM profile WHERE username = 'John'),
-  (SELECT id FROM room WHERE name = 'General')
+  (SELECT id FROM room WHERE name = 'General'),
+  'admin'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Jane'),
-  (SELECT id FROM room WHERE name = 'General')
+  (SELECT id FROM room WHERE name = 'General'),
+  'member'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Bob'),
-  (SELECT id FROM room WHERE name = 'Music')
+  (SELECT id FROM room WHERE name = 'Music'),
+  'muted'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Alice'),
-  (SELECT id FROM room WHERE name = 'Programming')
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'owner'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Eve'),
-  (SELECT id FROM room WHERE name = 'Gaming')
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'banned'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Mallory'),
-  (SELECT id FROM room WHERE name = 'General')
+  (SELECT id FROM room WHERE name = 'General'),
+  'ignored'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Trent'),
-  (SELECT id FROM room WHERE name = 'Random')
+  (SELECT id FROM room WHERE name = 'Random'),
+  'admin'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Carol'),
-  (SELECT id FROM room WHERE name = 'Music')
+  (SELECT id FROM room WHERE name = 'Music'),
+  'member'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Dave'),
-  (SELECT id FROM room WHERE name = 'Programming')
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'muted'
 ),
 (
   (SELECT id FROM profile WHERE username = 'Oscar'),
-  (SELECT id FROM room WHERE name = 'Gaming')
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'owner'
 );
 
 INSERT INTO profile_relation (from_profile_id, to_profile_id, status) VALUES
