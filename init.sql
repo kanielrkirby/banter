@@ -1,11 +1,14 @@
+-- User Table
 CREATE TABLE profile (
   id UUID PRIMARY KEY,
   username VARCHAR(100) NOT NULL,
   password VARCHAR(1000) NOT NULL,
+  status ENUM('online', 'offline', 'away', 'busy') NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Room Table
 CREATE TABLE room (
   id UUID PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -13,6 +16,7 @@ CREATE TABLE room (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Message Table
 CREATE TABLE message (
   id UUID PRIMARY KEY,
   profile_id UUID NOT NULL,
@@ -24,6 +28,7 @@ CREATE TABLE message (
   FOREIGN KEY (room_id) REFERENCES room (id)
 );
 
+-- User Status on a Room Table
 CREATE TABLE profile_room (
   profile_id UUID NOT NULL,
   room_id UUID NOT NULL,
@@ -36,17 +41,10 @@ CREATE TABLE profile_room (
 CREATE TABLE profile_relation (
   from_profile_id UUID NOT NULL,
   to_profile_id UUID NOT NULL,
-  status ENUM('pending', 'friend', 'blocked', 'ignored') NOT NULL,
+  status ENUM('pending', 'friend', 'blocked', 'ignored', 'requested') NOT NULL,
   PRIMARY KEY (from_profile_id, to_profile_id),
   FOREIGN KEY (from_profile_id) REFERENCES profile (id),
   FOREIGN KEY (to_profile_id) REFERENCES profile (id)
-);
-
-CREATE TABLE profile_status (
-  profile_id UUID NOT NULL,
-  status ENUM('online', 'offline', 'away', 'busy') NOT NULL,
-  PRIMARY KEY (profile_id),
-  FOREIGN KEY (profile_id) REFERENCES profile (id)
 );
 
 DELIMITER //
@@ -160,4 +158,57 @@ INSERT INTO profile_room (profile_id, room_id) VALUES
   (SELECT id FROM profile WHERE username = 'Oscar'),
   (SELECT id FROM room WHERE name = 'Gaming')
 );
+
+INSERT INTO profile_relation (from_profile_id, to_profile_id, status) VALUES
+(
+  (SELECT id FROM profile WHERE username = 'John'),
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  'friend'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  (SELECT id FROM profile WHERE username = 'Bob'),
+  'requested'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Bob'),
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  'pending'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Alice'),
+  (SELECT id FROM profile WHERE username = 'Eve'),
+  'friend'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Eve'),
+  (SELECT id FROM profile WHERE username = 'Mallory'),
+  'blocked'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Mallory'),
+  (SELECT id FROM profile WHERE username = 'Trent'),
+  'friend'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Trent'),
+  (SELECT id FROM profile WHERE username = 'Carol'),
+  'requested'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Carol'),
+  (SELECT id FROM profile WHERE username = 'Dave'),
+  'ignored'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Dave'),
+  (SELECT id FROM profile WHERE username = 'Oscar'),
+  'friend'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Oscar'),
+  (SELECT id FROM profile WHERE username = 'John'),
+  'blocked'
+);
+
 
