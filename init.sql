@@ -40,7 +40,6 @@ CREATE TABLE message_status (
 );
 
 INSERT INTO message_status (message_status_name) VALUES 
-('pending'), 
 ('sent'), 
 ('delivered'), 
 ('read');
@@ -144,7 +143,7 @@ END;
 
 DELIMITER ;
 
-INSERT INTO profile (username, password, status) VALUES 
+INSERT INTO profile (username, password, profile_status_name) VALUES 
   ('John', 'f29afg7p24', 'online'),
   ('Jane', 'f29afg7p24', 'offline'),
   ('Bob', 'f29afg7p24', 'away'),
@@ -163,7 +162,7 @@ INSERT INTO room (id, name) VALUES
   (UUID(), 'Programming'),
   (UUID(), 'Gaming');
 
-INSERT INTO profile_room (profile_id, room_id, status) VALUES
+INSERT INTO profile_room (profile_id, room_id, room_status_name) VALUES
 (
   (SELECT id FROM profile WHERE username = 'John'),
   (SELECT id FROM room WHERE name = 'General'),
@@ -215,7 +214,7 @@ INSERT INTO profile_room (profile_id, room_id, status) VALUES
   'owner'
 );
 
-INSERT INTO profile_relation (requester_profile_id, receiver_profile_id, status) VALUES
+INSERT INTO profile_relation (requester_profile_id, receiver_profile_id, relation_status_name) VALUES
 (
   (SELECT id FROM profile WHERE username = 'John'),
   (SELECT id FROM profile WHERE username = 'Jane'),
@@ -267,4 +266,155 @@ INSERT INTO profile_relation (requester_profile_id, receiver_profile_id, status)
   'blocked'
 );
 
+INSERT INTO message (profile_id, room_id, body, message_status_name) VALUES
+(
+  (SELECT id FROM profile WHERE username = 'John'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'Hello everyone in the General room!',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'Hi John! How are you?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Alice'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'Anyone familiar with SQL triggers?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Dave'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'Yes, Alice. What do you need help with?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Bob'),
+  (SELECT id FROM room WHERE name = 'Music'),
+  'Any recommendations for good rock songs?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Eve'),
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'Has anyone tried the new game "Endless Horizon"?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Oscar'),
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'Yes, Eve. I played it last night. It''s awesome!',
+  'delivered'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Carol'),
+  (SELECT id FROM room WHERE name = 'Music'),
+  'I love classic jazz. Any recommendations?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Mallory'),
+  (SELECT id FROM room WHERE name = 'Random'),
+  'Did anyone watch the lunar eclipse yesterday?',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Trent'),
+  (SELECT id FROM room WHERE name = 'Random'),
+  'I missed it! Any good pictures?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'John'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'By the way, there''s a team meeting tomorrow at 10 AM.',
+  'delivered'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Bob'),
+  (SELECT id FROM room WHERE name = 'Music'),
+  'Check out "Bohemian Rhapsody" by Queen. A classic!',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Alice'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'I figured out the SQL trigger issue. Thanks, Dave!',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'Thanks for the heads up, John.',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Dave'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'No problem, Alice. Always here to help!',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Eve'),
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'Oscar, let''s team up for a multiplayer session tonight.',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Oscar'),
+  (SELECT id FROM room WHERE name = 'Gaming'),
+  'Sounds like a plan, Eve!',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Mallory'),
+  (SELECT id FROM room WHERE name = 'Random'),
+  'I captured some amazing shots of the lunar eclipse. Will share them soon.',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Trent'),
+  (SELECT id FROM room WHERE name = 'Random'),
+  'Looking forward to it, Mallory!',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Carol'),
+  (SELECT id FROM room WHERE name = 'Music'),
+  'Thanks for the jazz recommendations. Loving it!',
+  'delivered'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Bob'),
+  (SELECT id FROM room WHERE name = 'Music'),
+  'Glad you liked it, Carol!',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Jane'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'Can we postpone the team meeting to 11 AM?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'John'),
+  (SELECT id FROM room WHERE name = 'General'),
+  'Sure, Jane. I''ll make the change.',
+  'read'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Alice'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'Anyone attending the tech conference next week?',
+  'sent'
+),
+(
+  (SELECT id FROM profile WHERE username = 'Dave'),
+  (SELECT id FROM room WHERE name = 'Programming'),
+  'I am, Alice. Let''s catch up there!',
+  'read'
+);
 
