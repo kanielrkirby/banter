@@ -98,17 +98,17 @@ END;
 
 DELIMITER ;
 
-INSERT INTO profile (id, username, password) VALUES 
-  (UUID(), 'John', 'f29afg7p24'),
-  (UUID(), 'Jane', 'f29afg7p24'),
-  (UUID(), 'Bob', 'f29afg7p24'),
-  (UUID(), 'Alice', 'f29afg7p24'),
-  (UUID(), 'Eve', 'f29afg7p24'),
-  (UUID(), 'Mallory', 'f29afg7p24'),
-  (UUID(), 'Trent', 'f29afg7p24'),
-  (UUID(), 'Carol', 'f29afg7p24'),
-  (UUID(), 'Dave', 'f29afg7p24'),
-  (UUID(), 'Oscar', 'f29afg7p24');
+INSERT INTO profile (id, username, password, status) VALUES 
+  (UUID(), 'John', 'f29afg7p24', 'online'),
+  (UUID(), 'Jane', 'f29afg7p24', 'offline'),
+  (UUID(), 'Bob', 'f29afg7p24', 'away'),
+  (UUID(), 'Alice', 'f29afg7p24', 'busy'),
+  (UUID(), 'Eve', 'f29afg7p24', 'online'),
+  (UUID(), 'Mallory', 'f29afg7p24', 'offline'),
+  (UUID(), 'Trent', 'f29afg7p24', 'away'),
+  (UUID(), 'Carol', 'f29afg7p24', 'busy'),
+  (UUID(), 'Dave', 'f29afg7p24', 'online'),
+  (UUID(), 'Oscar', 'f29afg7p24', 'offline');
 
 INSERT INTO room (id, name) VALUES
   (UUID(), 'General'),
