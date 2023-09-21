@@ -51,9 +51,9 @@ CREATE TABLE profile (
   id VARCHAR(100) PRIMARY KEY,
   hashed_password VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-  status VARCHAR(50) NOT NULL DEFAULT 'offline',
-  FOREIGN KEY (status) REFERENCES profile_status (status_name)
+  updated_at TIMESTAMP DEFAULT NOW(),
+  profile_status_name VARCHAR(50) NOT NULL DEFAULT 'offline',
+  FOREIGN KEY (profile_status_name) REFERENCES profile_status (status_name)
 );
 
 -- "Room" Table
@@ -72,32 +72,32 @@ CREATE TABLE message (
   body VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
-  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  message_status_name VARCHAR(50) NOT NULL DEFAULT 'pending',
   FOREIGN KEY (profile_id) REFERENCES profile (id),
   FOREIGN KEY (room_id) REFERENCES room (id),
-  FOREIGN KEY (status) REFERENCES message_status (status_name)
+  FOREIGN KEY (message_status_name) REFERENCES message_status (status_name)
 );
 
 -- "User Status on a Room" Table
 CREATE TABLE profile_room (
   profile_id VARCHAR(100) NOT NULL,
   room_id UUID NOT NULL,
-  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  room_status_name VARCHAR(50) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (profile_id, room_id),
   FOREIGN KEY (profile_id) REFERENCES profile (id),
   FOREIGN KEY (room_id) REFERENCES room (id),
-  FOREIGN KEY (status) REFERENCES room_status (status_name)
+  FOREIGN KEY (room_status_name) REFERENCES room_status (status_name)
 );
 
 -- "User Relation" Table
 CREATE TABLE profile_relation (
   requester_profile_id VARCHAR(100) NOT NULL,
   receiver_profile_id VARCHAR(100) NOT NULL,
-  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  relation_status_name VARCHAR(50) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (requester_profile_id, receiver_profile_id),
   FOREIGN KEY (requester_profile_id) REFERENCES profile (id),
   FOREIGN KEY (receiver_profile_id) REFERENCES profile (id),
-  FOREIGN KEY (status) REFERENCES profile_relation_status (status_name)
+  FOREIGN KEY (relation_status_name) REFERENCES profile_relation_status (status_name)
 );
 
 -- "Updated At" Triggers
