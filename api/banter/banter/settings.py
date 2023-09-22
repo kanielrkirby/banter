@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'channels',
+    'channels_redis',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,6 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'banter.wsgi.application'
+ASGI_APPLICATION = 'banter.routing.application'
 
 
 # Database
@@ -92,6 +94,22 @@ DATABASES = {
          'PORT': os.getenv('MYSQL_PORT'),
     }
 }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": 
+            [{
+                "address": os.getenv('REDIS_HOST'),
+                "port": os.getenv('REDIS_PORT'),
+                "db": os.getenv('REDIS_DB'),
+                "password": os.getenv('REDIS_PASSWORD'),
+            }],
+        },
+    },
+}
+
 
 
 # Password validation
