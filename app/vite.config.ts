@@ -14,5 +14,17 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    host: '0.0.0.0',
+    hmr: {
+      host: `${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`,
+    },
+    port: parseInt(process.env.FRONTEND_PORT ?? '3000'),
+    watch: {
+      usePolling: true,
+      interval: 1000,
+      atomic: 50
+    }
   }
 })

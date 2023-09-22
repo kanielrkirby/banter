@@ -12,3 +12,6 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    environment:
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_PORT=${FRONTEND_PORT}
