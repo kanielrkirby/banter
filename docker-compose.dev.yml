@@ -5,10 +5,10 @@ services:
       context: api
       dockerfile: Dockerfile.dev
     ports:
-      - 8000:8000
+      - ${BACKEND_PORT}:${BACKEND_PORT}
   vue:
     build:
       context: app
       dockerfile: Dockerfile.dev
     ports:
-    - 8080:8080
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
