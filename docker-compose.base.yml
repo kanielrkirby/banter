@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7.2.1-alpine
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+  mysql:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  django:
+    container_name: banter-django
+    working_dir: /api/banter
+    volumes:
+      - ./api:/api
+    depends_on:
+      - redis
+      - mysql
+  vue:
+    working_dir: /app
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+

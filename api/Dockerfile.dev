@@ -1,0 +1,15 @@
+FROM python:3.12.0rc3-alpine3.18
+
+RUN apk add --no-cache \
+    mysql-dev \
+    gcc \
+    musl-dev
+
+WORKDIR /api
+
+COPY ./requirements.txt /api/requirements.txt
+
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+CMD ["uvicorn", "banter.asgi:application"]

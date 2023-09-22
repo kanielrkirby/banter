@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  django:
+    build:
+      context: api
+      dockerfile: Dockerfile.dev
+    ports:
+      - 8000:8000
+  vue:
+    build:
+      context: app
+      dockerfile: Dockerfile.dev
+    ports:
+    - 8080:8080
