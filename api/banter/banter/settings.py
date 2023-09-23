@@ -14,12 +14,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="../../.env")
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-PORT = os.getenv('PORT') or 8000
+PORT = os.getenv('BACKEND_PORT') or 8000
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -28,9 +28,13 @@ PORT = os.getenv('PORT') or 8000
 SECRET_KEY = 'django-insecure-loz0h1*3o7v^(e_3uqa%x=%=r5x4d2#ler4juqq4hgv9$mg0!)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG') or False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "*",
+    os.getenv('FRONTEND_HOST'),
+    f'{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}',
+]
 
 
 # Application definition

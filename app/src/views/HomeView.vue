@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import axios from "axios";
 
 const sendRequest = () => {
   axios
-    .get("https://localhost:8000/api/profile/", {
+    .get("http://localhost:8000/api/profile/ping", {
       method: "GET",
     })
     .then((response) => {
