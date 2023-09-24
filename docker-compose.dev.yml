@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - ${BACKEND_PORT}:${BACKEND_PORT}
+    environment:
+      - DJANGO_DEBUG=True
   vue:
     build:
       context: app

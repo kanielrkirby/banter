@@ -73,6 +73,17 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.profile.name}: {self.body[:50]}..."  # Displaying the first 50 chars of the message
 
+class MessageStatus(models.Model):
+    """
+    Represents the status of a message (e.g., sent, received, delivered, read, ignored, deleted).
+    Fields:
+        name: the name of the status [sent, received, delivered, read, ignored, deleted]
+    """
+    name = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class ProfileMessageStatus(models.Model):
     """
     Represents the status of a message for a profile (e.g., read, delivered, etc.).

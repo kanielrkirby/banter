@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Room, Message, RoomMessageStatus, RoomProfileStatus
+from .models import Room, Message, ProfileRoomStatus, ProfileRoom, MessageStatus
+from .serializers import RoomSerializer, MessageSerializer
 
 class RoomsView(generics.ListAPIView):
     """
@@ -101,6 +102,6 @@ class MessageView(APIView):
         Toggle the status of a message to deleted.
         """
         message = Message.objects.get(id=message_id)
-        message.status = RoomMessageStatus.objects.get(name='deleted')
+        message.status = MessageStatus.objects.get(name='deleted')
         message.save()
         return Response(status=204)

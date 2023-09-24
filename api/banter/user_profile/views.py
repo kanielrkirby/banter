@@ -2,7 +2,10 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.models import Q
+from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
+from .models import Profile, ProfileRelation, ProfileRelationStatus
+from .serializers import ProfileSerializer, ProfileRelationStatusSerializer, ProfileRelationSerializer
 
 class ProfilesView(generics.ListAPIView):
     """
@@ -48,7 +51,7 @@ class ProfileView(APIView):
         Delete a profile.
         """
         profile = Profile.objects.get(id=profile_id)
-        profile.status = ProfileStatus.objects.get(name='deleted')
+        profile.status = ProfileRelationStatus.objects.get(name='deleted')
         profile.save()
         return Response(status=204)
 
