@@ -3,7 +3,7 @@ import axios from "axios";
 
 const sendRequest = () => {
   axios
-    .get("http://localhost:8000/api/profile/ping", {
+    .get("http://localhost:8000/api/profile/", {
       method: "GET",
     })
     .then((response) => {
