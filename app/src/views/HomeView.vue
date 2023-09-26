@@ -25,6 +25,11 @@ async function getProfiles() {
   <Layout>
     <main>
       <button @click="getProfiles">Get Profiles</button>
+      <ul>
+        <li v-for="profile in profiles" :key="profile.id">
+          {{ profile.username }}
+        </li>
+      </ul>
     </main>
   </Layout>
 </template>

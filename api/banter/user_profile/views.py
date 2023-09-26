@@ -13,8 +13,17 @@ class ProfilesView(generics.ListAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
-    #permission_classes = []
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.request.method == "GET":
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
     def get(self, request):
         """
         Get all profiles.
@@ -22,6 +31,7 @@ class ProfilesView(generics.ListAPIView):
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
+
     def post(self, request):
         """
         Create a profile.
