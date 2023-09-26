@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');
@@ -14,6 +17,7 @@ async function login() {
 
     if (response.status === 200) {
       console.log('Logged in successfully:', response.data);
+      router.push({ name: 'home' });
     }
   } catch (error) {
     console.error('Error logging in:', error);

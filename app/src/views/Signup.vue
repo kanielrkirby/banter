@@ -39,9 +39,9 @@ async function signup() {
       password: password.value,
     });
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       console.log('Signed up successfully:', response.data);
-      router.push({ name: 'Login' });
+      router.push({ name: 'login' });
     }
   } catch (error) {
     console.error('Error signing up:', error);
