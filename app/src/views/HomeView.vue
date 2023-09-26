@@ -1,16 +1,30 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import Layout from "@/layouts/Main.vue";
+import axios from "axios";
+import { ref } from "vue";
 
-export default defineComponent({
-  components: {
-    Layout,
-  },
-});
+const profiles = ref([]);
+
+async function getProfiles() {
+  try {
+    const response = await axios.get("http://localhost:8000/api/profile/", {
+      withCredentials: true,
+    },
+    );
+
+    if (response.status === 200) {
+      profiles.value = response.data;
+    }
+  } catch (error) {
+    console.error("Error getting profiles:", error);
+  }
+}
 </script>
 
 <template>
   <Layout>
-    <main></main>
+    <main>
+      <button @click="getProfiles">Get Profiles</button>
+    </main>
   </Layout>
 </template>

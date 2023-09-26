@@ -24,25 +24,24 @@ secure = os.getenv('DJANGO_SECURE') or True
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:  # check if authentication was successful
+        if response.status_code == 200:  
             access_token = response.data['access']
             refresh_token = response.data['refresh']
-            response.data = {}  # clear the plain-text tokens from the response
-            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure)  # add tokens to cookies
+            response.data = {} 
+            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
             response.set_cookie('refresh_token', refresh_token, httponly=True, samesite='Lax', secure=secure)
         return response
 from rest_framework_simplejwt.views import TokenRefreshView
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
-        # Extract the refresh token from the cookie
         request.data['refresh'] = request.COOKIES.get('refresh_token')
         
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
             access_token = response.data['access']
-            response.data = {}  # clear the plain-text token from the response
-            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax')  # refresh the access token in the cookie
+            response.data = {}  
+            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
         return response
 
 

@@ -13,8 +13,8 @@ class ProfilesView(generics.ListAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    #permission_classes = [IsAuthenticated]
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
+    #permission_classes = []
     def get(self, request):
         """
         Get all profiles.
