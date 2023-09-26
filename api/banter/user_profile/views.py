@@ -9,16 +9,30 @@ from .serializers import ProfileSerializer, ProfileRelationStatusSerializer, Pro
 
 class ProfilesView(generics.ListAPIView):
     """
-    View for listing all profiles.
+    View for listing all profiles and creating a new profile.
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     #permission_classes = [IsAuthenticated]
     permission_classes = []
+    def get(self, request):
+        """
+        Get all profiles.
+        """
+        profiles = Profile.objects.all()
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data)
+    def post(self, request):
+        """
+        Create a profile.
+        """
+        profile = Profile.objects.create_user(username=request.data['username'], password=request.data['password'])
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
 
 class ProfileView(APIView):
     """
-    View for getting, creating, updating, and deleting a profile.
+    View for getting, updating, and deleting a profile.
     """
     permission_classes = [IsAuthenticated]
     def get(self, request, profile_id):
@@ -26,14 +40,6 @@ class ProfileView(APIView):
         Get a profile.
         """
         profile = Profile.objects.get(id=profile_id)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-
-    def post(self, request, profile_id):
-        """
-        Create a profile.
-        """
-        profile = Profile.objects.create(name=request.data['name'])
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
 

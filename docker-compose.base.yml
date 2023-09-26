@@ -18,6 +18,8 @@ services:
       - MYSQL_PORT=${MYSQL_PORT}
       - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
   django:
     container_name: banter-django
     working_dir: /api/banter

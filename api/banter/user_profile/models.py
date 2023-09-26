@@ -1,4 +1,39 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+import uuid
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+
+
+class ProfileManager(BaseUserManager):
+    """
+    Manager for the Profile model.
+    """
+    def create_user(self, username, password):
+        """
+        Create a user.
+        """
+        if not username:
+            raise ValueError('Users must have a username.')
+        
+        if not password:
+            raise ValueError('Users must have a password.')
+
+        user = self.model(username=username)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, password):
+        """
+        Create a superuser.
+        """
+        user = self.create_user(username, password=password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
 
 class ProfileRelationStatus(models.Model):
     """
@@ -11,23 +46,41 @@ class ProfileRelationStatus(models.Model):
     def __str__(self):
         return self.name
 
-class Profile(models.Model):
+class ProfileStatus(models.Model):
     """
-    Represents a user profile.
+    Represents the status of a profile.
     Fields:
-        id: the unique identifier of the profile
-        username: the username of the profile
-        hashed_password: the hashed password of the profile
-        created_at: the date and time the profile was created
-        updated_at: the date and time the profile was last updated
-        status: the status of the profile
+        id: the id of the status
+        name: the name of the status [active, offline, busy, deleted]
     """
-    id = models.UUIDField(primary_key=True, editable=False)
-    username = models.CharField(max_length=100)
-    hashed_password = models.CharField(max_length=100)
+    # id is automaticaly incremented as a primary key
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.name
+
+@receiver(post_migrate)
+def populate_default_statuses(sender, **kwargs):
+    statuses = ['active', 'offline', 'busy', 'deleted']
+    for status in statuses:
+        ProfileStatus.objects.get_or_create(name=status)
+
+class Profile(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(_('password'), max_length=128, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.ForeignKey(ProfileRelationStatus, on_delete=models.CASCADE)
+    status = models.ForeignKey(ProfileStatus, default=2, on_delete=models.CASCADE)
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = ProfileManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
 
     class Meta:
         ordering = ['-created_at']
