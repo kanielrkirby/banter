@@ -13,10 +13,11 @@ async function login() {
     const response = await axios.post('http://localhost:8000/api/token/', {
       username: username.value,
       password: password.value,
+    }, {
+      withCredentials: true,
     });
 
     if (response.status === 200) {
-      console.log('Logged in successfully:', response.data);
       router.push({ name: 'home' });
     }
   } catch (error) {
@@ -30,7 +31,8 @@ async function login() {
     <h1>Login</h1>
     <form @submit.prevent="login">
       <label for="username">Username</label>
-      <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required autocomplete="username" />
+      <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required
+        autocomplete="username" />
       <label for="password">Password</label>
       <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
         autocomplete="current-password" />
