@@ -1,29 +1,16 @@
-<script setup lang="ts">
-import axios from "axios";
+<script lang="ts">
+import { defineComponent } from "vue";
+import Layout from "@/layouts/Main.vue";
 
-const sendRequest = () => {
-  axios
-    .post("http://localhost:8000/api/profile/", {
-      username: "johnny",
-      password: "12345678",
-      email: "johnny@example.com",
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-    )
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+export default defineComponent({
+  components: {
+    Layout,
+  },
+});
 </script>
 
 <template>
-  <main>
-    <button @click="sendRequest">Send Request</button>
-  </main>
+  <Layout>
+    <main></main>
+  </Layout>
 </template>
