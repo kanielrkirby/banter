@@ -6,6 +6,8 @@ from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from .models import Profile, ProfileRelation, ProfileRelationStatus
 from .serializers import ProfileSerializer, ProfileRelationStatusSerializer, ProfileRelationSerializer
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class ProfilesView(generics.ListAPIView):
     """
@@ -89,6 +91,7 @@ class ProfileRelationView(generics.ListAPIView):
 class ProfileAuthView(APIView):
     """
     View to check if a profile is authenticated, and if so, return the profile.
+    Also, this view is used to refresh the access token.
     """
     permission_classes = [IsAuthenticated]
     def get(self, request):
@@ -96,11 +99,32 @@ class ProfileAuthView(APIView):
         Get the authenticated profile.
         """
         profile = request.user
-        # remove password from profile
-        profile.password = None
         serializer = ProfileSerializer(profile)
-        serializer.data['authenticated'] = True
-        return Response(serializer.data)
+        data = serializer.data
+        data['authenticated'] = True
+        data['password'] = None
+
+        response = Response(data)
+        if not request.user or not request.auth:
+            try:
+                # get refresh token from cookie
+                refresh_token = request.COOKIES.get('refresh_token')
+                # test if refresh token is valid
+                refresh = RefreshToken(refresh_token)
+                # generate new access token if refresh token is valid
+                access_token = str(refresh.access_token)
+                # set access token in cookie
+                response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure)
+
+            except Exception as e:
+                # Access token refresh failed, likely due to expiration
+                response = Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
+                response.delete_cookie('access_token')
+                response.delete_cookie('refresh_token')
+                return response
+
+        return response
+
 
 class ProfileLogoutView(APIView):
     """

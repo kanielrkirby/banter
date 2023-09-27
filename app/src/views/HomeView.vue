@@ -8,9 +8,9 @@ import { user } from "@/stores/user";
 
 const router = useRouter();
 
-if (user.value) {
-  router.push({ name: "login" });
-}
+//if (!user.value) {
+ // router.push({ name: "login" });
+//}
 
 interface Profile {
   id: number;

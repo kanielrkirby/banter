@@ -41,12 +41,15 @@ async function checkAuth() {
     if (data.id !== null && data.id !== undefined) {
       loginUser({ id: data.id, username: data.username });
     } else {
-      logoutUser();
+      throw new Error('User is not authenticated');
     }
   } catch (err) {
-    console.error(err);
+    console.log(err);
+    //logoutUser();
   }
 }
+
+
 
 export { isAuthenticated, user, loginUser, logoutUser, checkAuth };
 
