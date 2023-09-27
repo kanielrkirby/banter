@@ -1,9 +1,33 @@
+<template>
+  <main>
+    <h1>Login</h1>
+
+    <Fragment v-if="error">
+      <p>{{ error }}</p>
+    </Fragment>
+
+    <form @submit.prevent="login">
+      <label for="username">Username</label>
+      <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required
+        autocomplete="username" />
+
+      <label for="password">Password</label>
+      <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
+        autocomplete="current-password" />
+
+      <button type="submit">Login</button>
+    </form>
+  </main>
+</template>
+
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const error = ref<string | null>(null)
 
 const username = ref('');
 const password = ref('');
@@ -19,24 +43,9 @@ async function login() {
 
     if (response.status === 200) {
       router.push({ name: 'home' });
-    }
-  } catch (error) {
-    console.error('Error logging in:', error);
+    } else throw new Error();
+  } catch (err) {
+    error.value = "Error logging in, please try again later."
   }
 }
 </script>
-
-<template>
-  <main>
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <label for="username">Username</label>
-      <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required
-        autocomplete="username" />
-      <label for="password">Password</label>
-      <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
-        autocomplete="current-password" />
-      <button type="submit">Login</button>
-    </form>
-  </main>
-</template>
