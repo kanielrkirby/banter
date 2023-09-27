@@ -4,9 +4,13 @@ import axios from "axios";
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { isAuthenticated } from "@/stores/user"
+import { user } from "@/stores/user";
 
 const router = useRouter();
+
+if (user.value) {
+  router.push({ name: "login" });
+}
 
 interface Profile {
   id: number;

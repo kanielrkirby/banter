@@ -83,7 +83,7 @@ class ProfileRelationView(generics.ListAPIView):
         Get all profiles that are related to a profile.
         """
         #profile = Profile.objects.get(id=self.kwargs['profile_id'])
-        profile = self.request.user
+        profile = Profile.objects.get(requester=self.kwargs['profile_id'])
         return ProfileRelation.objects.filter(Q(requester=profile) | Q(receiver=profile))
 
 class ProfileAuthView(APIView):
@@ -96,6 +96,23 @@ class ProfileAuthView(APIView):
         Get the authenticated profile.
         """
         profile = request.user
-        print(profile)
+        # remove password from profile
+        profile.password = None
         serializer = ProfileSerializer(profile)
+        serializer.data['authenticated'] = True
         return Response(serializer.data)
+
+class ProfileLogoutView(APIView):
+    """
+    View to logout a profile.
+    """
+    permission_classes = []
+    def get(self, request):
+        """
+        Logout a profile.
+        """
+        response = Response()
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
+

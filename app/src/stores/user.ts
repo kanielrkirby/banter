@@ -6,7 +6,10 @@ import axios from 'axios';
 const isAuthenticated = ref(false);
 
 // Create a user object using reactive
-const user = reactive({
+const user = reactive<{
+  id: number | null;
+  username: string;
+}>({
   id: null,
   username: '',
 });
@@ -14,7 +17,8 @@ const user = reactive({
 // Functions to update user data and authentication status
 function loginUser(userData: { id: number; username: string }) {
   isAuthenticated.value = true;
-  Object.assign(user, userData);
+  user.id = userData.id;
+  user.username = userData.username;
 }
 
 function logoutUser() {
@@ -23,21 +27,26 @@ function logoutUser() {
     id: null,
     username: '',
   });
+  // Clear the httpOnly cookie
+  axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile/logout/`,
+    { withCredentials: true });
 }
 
 async function checkAuth() {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile/auth`,
-                                    { withCredentials: true });
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile/auth/`,
+      { withCredentials: true });
     const data = response.data;
-    if (data.user.id !== null && data.user.id !== undefined) {
-      loginUser(data.user);
+    console.log(data);
+    if (data.id !== null && data.id !== undefined) {
+      loginUser({ id: data.id, username: data.username });
+    } else {
+      logoutUser();
     }
   } catch (err) {
     console.error(err);
   }
 }
-checkAuth();
 
-export { isAuthenticated, user, loginUser, logoutUser };
+export { isAuthenticated, user, loginUser, logoutUser, checkAuth };
 
