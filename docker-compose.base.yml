@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 services:
   redis:
     container_name: banter-redis
@@ -20,6 +20,12 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 3s
+      timeout: 20s
+      retries: 10
+
   django:
     container_name: banter-django
     working_dir: /api/banter
@@ -37,6 +43,9 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
   vue:
     container_name: banter-vue
     working_dir: /app
