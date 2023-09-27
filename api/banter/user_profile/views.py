@@ -82,5 +82,20 @@ class ProfileRelationView(generics.ListAPIView):
         """
         Get all profiles that are related to a profile.
         """
-        profile = Profile.objects.get(id=self.kwargs['profile_id'])
+        #profile = Profile.objects.get(id=self.kwargs['profile_id'])
+        profile = self.request.user
         return ProfileRelation.objects.filter(Q(requester=profile) | Q(receiver=profile))
+
+class ProfileAuthView(APIView):
+    """
+    View to check if a profile is authenticated, and if so, return the profile.
+    """
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        """
+        Get the authenticated profile.
+        """
+        profile = request.user
+        print(profile)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)

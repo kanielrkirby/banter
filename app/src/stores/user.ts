@@ -1,5 +1,6 @@
 // user.js
 import { ref, reactive } from 'vue';
+import axios from 'axios';
 
 // Create a ref for the user's authentication status
 const isAuthenticated = ref(false);
@@ -23,6 +24,20 @@ function logoutUser() {
     username: '',
   });
 }
+
+async function checkAuth() {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile/auth`,
+                                    { withCredentials: true });
+    const data = response.data;
+    if (data.user.id !== null && data.user.id !== undefined) {
+      loginUser(data.user);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+checkAuth();
 
 export { isAuthenticated, user, loginUser, logoutUser };
 
