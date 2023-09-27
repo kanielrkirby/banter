@@ -17,3 +17,4 @@ services:
     environment:
       - FRONTEND_HOST=${FRONTEND_HOST}
       - FRONTEND_PORT=${FRONTEND_PORT}
+      - VITE_BACKEND_URL=${BACKEND_HOST}:${BACKEND_PORT}
