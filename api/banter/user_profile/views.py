@@ -21,7 +21,7 @@ class ProfilesView(generics.ListAPIView):
         if self.request.method == "GET":
             permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [AllowAny]
+            permission_classes = []
         return [permission() for permission in permission_classes]
 
     def get(self, request):

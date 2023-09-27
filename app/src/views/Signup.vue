@@ -2,9 +2,9 @@
   <main>
     <h1>Sign Up</h1>
 
-    <Fragment v-if="error">
+    <template v-if="error">
       <p>{{ error }}</p>
-    </Fragment>
+    </template>
 
     <form @submit.prevent="signup">
       <label for="username">Username</label>
@@ -44,7 +44,8 @@ async function signup() {
   }
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}}/api/profile/`, {
+  console.log(`${import.meta.env.VITE_BACKEND_URL}}/api/profile/`)
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/profile/`, {
       username: username.value,
       password: password.value,
     });
@@ -54,6 +55,7 @@ async function signup() {
     }
   } catch (err) {
     error.value = "Error signing up"
+    console.log(err);
   }
 }
 </script>

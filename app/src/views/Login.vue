@@ -24,6 +24,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { loginUser } from '@/stores/user';
 
 const router = useRouter();
 
@@ -42,6 +43,10 @@ async function login() {
     });
 
     if (response.status === 200) {
+      loginUser({
+        username: username.value,
+        id: response.data.id,
+      })
       router.push({ name: 'home' });
     } else throw new Error();
   } catch (err) {

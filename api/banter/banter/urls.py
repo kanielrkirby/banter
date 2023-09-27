@@ -30,6 +30,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             response.data = {} 
             response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
             response.set_cookie('refresh_token', refresh_token, httponly=True, samesite='Lax', secure=secure)
+            response.data['id'] = request.user.id
         return response
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -42,6 +43,7 @@ class CustomTokenRefreshView(TokenRefreshView):
             access_token = response.data['access']
             response.data = {}  
             response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
+            response.data['id'] = request.user.id
         return response
 
 

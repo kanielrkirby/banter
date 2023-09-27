@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { isAuthenticated } from "@/stores/user"
 
 const router = useRouter();
 
@@ -37,7 +38,11 @@ getList();
 <template>
   <Layout>
     <main>
-      <ul>
+      <Fragment v-if="profiles.length === 0">
+        <p v-if="error">{{ error }}</p>
+        <p v-else>Loading...</p>
+      </Fragment>
+      <ul v-else>
         <li v-for="profile in profiles" :key="profile.id">
           <a href="">
             {{ profile.username }}
