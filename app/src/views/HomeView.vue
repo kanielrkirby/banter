@@ -3,14 +3,19 @@ import Layout from "@/layouts/Main.vue";
 import axios from "axios";
 import { ref } from "vue";
 
-const profiles = ref([]);
+interface Profile {
+  id: number;
+  username: string;
+}
+
+const profiles = ref<Profile[]>([]);
+const error = ref("");
 
 async function getProfiles() {
   try {
     const response = await axios.get("http://localhost:8000/api/profile/", {
       withCredentials: true,
-    },
-    );
+    });
 
     if (response.status === 200) {
       profiles.value = response.data;
@@ -19,6 +24,7 @@ async function getProfiles() {
     console.error("Error getting profiles:", error);
   }
 }
+
 </script>
 
 <template>
