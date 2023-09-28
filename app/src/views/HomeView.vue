@@ -3,14 +3,6 @@ import Layout from "@/layouts/Main.vue";
 import axios from "axios";
 
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { user } from "@/stores/user";
-
-const router = useRouter();
-
-//if (!user.value) {
- // router.push({ name: "login" });
-//}
 
 interface Profile {
   id: number;
