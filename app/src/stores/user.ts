@@ -28,10 +28,10 @@ function logoutUser() {
     id: null,
     username: '',
   });
-  // Clear the httpOnly cookie
   axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile/logout/`,
     { withCredentials: true });
-  router.push({ name: 'login' });
+  if (location.pathname !== '/login' && location.pathname !== '/signup')
+    router.push({ name: 'login' });
 }
 
 async function checkAuth() {

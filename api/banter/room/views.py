@@ -12,6 +12,18 @@ class RoomsView(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
+class ProfileRoomsView(APIView):
+    """
+    View for listing all rooms the authenticated profile is member|admin|owner of.
+    """
+    def get(self, request):
+        """
+        Get all rooms for a profile.
+        """
+        profile_id = request.user.id
+        profile_rooms = ProfileRoom.objects.filter(profile=profile_id)
+        serializer = RoomSerializer(profile_rooms, many=True)
+        return Response(serializer.data)
 
 class RoomView(APIView):
     """

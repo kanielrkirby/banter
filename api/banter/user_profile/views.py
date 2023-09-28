@@ -171,3 +171,17 @@ class ProfileLogoutView(APIView):
         response.delete_cookie('refresh_token')
         return response
 
+
+# Get profiles that are "status=friends" to the authenticated profile.
+class ProfileFriendsView(generics.ListAPIView):
+    """
+    View for listing all profiles that are friends with the authenticated profile.
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        """
+        Get all profiles that are friends with the authenticated profile.
+        """
+        profile = self.request.user
+        return ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile), status=ProfileRelationStatus.objects.get(name='friends'))
