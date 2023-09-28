@@ -51,7 +51,7 @@ getList();
       </Fragment>
       <ul v-else>
         <li v-for="profile in profiles" :key="profile.id">
-          <a href="">
+          <a href="`${import.meta.env.VITE_BACKEND_URL}/getroom/{{ profile.id }}`">
             {{ profile.username }}
           </a>
         </li>

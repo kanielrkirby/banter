@@ -3,11 +3,14 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Profile, ProfileRelation, ProfileRelationStatus
 from .serializers import ProfileSerializer, ProfileRelationStatusSerializer, ProfileRelationSerializer
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+import os
+
+secure = os.environ.get('SECURE', False)
 
 class ProfilesView(generics.ListAPIView):
     """
@@ -105,34 +108,54 @@ class ProfileAuthView(APIView):
     View to check if a profile is authenticated, and if so, return the profile.
     Also, this view is used to refresh the access token.
     """
-    permission_classes = []
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def get(self, request):
         """
-        Get the authenticated profile.
+        Get the authenticated profile or handle token refresh.
         """
-        profile = request.user
-        serializer = ProfileSerializer(profile)
-        data = serializer.data
-        data['authenticated'] = True
-        data['password'] = None
+        response = Response()
 
-        response = Response(data)
-        if not request.user or not request.auth:
-            try:
-                refresh_token = request.COOKIES.get('refresh_token')
+        def logout():
+            print("In logout")
+            response = Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+
+        try:
+            print("In try")
+            refresh_token = request.COOKIES.get('refresh_token')
+            if refresh_token:
+                print("In refresh_token")
                 refresh = RefreshToken(refresh_token)
                 access_token = str(refresh.access_token)
-                response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure)
 
-            except Exception as e:
-                # Access token refresh failed, likely due to expiration
-                response = Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
-                response.delete_cookie('access_token')
-                response.delete_cookie('refresh_token')
-                return response
+                try:
+                    print("In try 2")
+                    access = AccessToken(access_token)
+                    user = access.payload.get('user_id')  # Assuming the user ID is stored in the token
+                    if user:
+                        print("In user")
+                        # Retrieve the user and include user data in response_data
+                        profile = Profile.objects.get(id=user)  # Replace with your UserProfile model retrieval logic
+                        serializer = ProfileSerializer(profile)
+                        response.data = serializer.data
+                        response.set_cookie('access_token', access_token, httponly=True, secure=secure)
+                        response.data['password'] = None
+                        response.data['authenticated'] = True
+
+                except Exception as e:
+                    print("In except")
+                    print(e)
+                    return logout()
+
+        except Exception as e:
+            print("In except 2")
+            return logout()
 
         return response
-
 
 class ProfileLogoutView(APIView):
     """
