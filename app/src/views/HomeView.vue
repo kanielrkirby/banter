@@ -17,7 +17,36 @@ interface Room {
 const profiles = ref<Profile[]>([]);
 const rooms = ref<Room[]>([]);
 const error = ref<string | null>(null);
+const friendError = ref<string | null>(null);
 const loading = ref<boolean>(true);
+const addFriendVal = ref<boolean>(false);
+const userId = ref<number>(0);
+
+const toggleAddFriend = () => addFriendVal.value = !addFriendVal.value;
+
+async function addFriend() {
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL
+      }/api/profile/add/${userId.value}/`,
+      {},
+      {
+        withCredentials: true,
+      });
+
+    if (response.status === 200) {
+      toggleAddFriend();
+      getList();
+    } else {
+      friendError.value = "Error adding friend"
+    }
+
+  } catch (err) {
+    error.value = "Error adding friend"
+    console.log(err);
+  } finally {
+    addFriendVal.value = false;
+  }
+}
 
 async function getList() {
   try {
@@ -34,7 +63,7 @@ async function getList() {
     error.value = "Error getting profiles, please try again later."
   }
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/room/profile`, {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/room/profile/`, {
       withCredentials: true,
     });
     if (response.status === 200) {
@@ -70,6 +99,14 @@ getList();
             </li>
           </template>
         </ul>
+      </template>
+      <button @click="toggleAddFriend">Add Friend</button>
+      <template v-if="addFriendVal">
+        <form @submit.prevent="addFriend" class="fixed w-full h-full">
+          <label for="userId">User ID</label>
+          <input v-model="userId" type="text" name="userId" id="userId" required />
+          <button type="submit">Add Friend</button>
+        </form>
       </template>
     </main>
   </Layout>

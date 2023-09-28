@@ -46,6 +46,13 @@ class ProfileRelationStatus(models.Model):
     def __str__(self):
         return self.name
 
+@receiver(post_migrate)
+def populate_default_profile_relation_statuses(sender, **kwargs):
+    statuses = ['friend', 'requested', 'received', 'blocked', 'ignored']
+    for status in statuses:
+        ProfileRelationStatus.objects.get_or_create(name=status)
+
+
 class ProfileStatus(models.Model):
     """
     Represents the status of a profile.

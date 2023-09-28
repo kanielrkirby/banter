@@ -77,6 +77,27 @@ class ProfileView(APIView):
         profile.save()
         return Response(status=204)
 
+class ProfileAddFriendView(APIView):
+    """
+    View for adding a friend to a profile.
+    """
+    permission_classes = [IsAuthenticated]
+    def post(self, request, id):
+        """
+        Add a friend to a profile.
+        """
+        requester_profile = request.user
+        receiver_profile = Profile.objects.get(id=id)
+        profile_relation, created = ProfileRelation.objects.update_or_create(
+            requester_profile=requester_profile,
+            receiver_profile=receiver_profile,
+            defaults={'status_id': 1}
+        )
+        
+        serializer = ProfileRelationSerializer(profile_relation)
+        return Response(serializer.data)
+
+
 class ProfileRelationView(generics.ListAPIView):
     """
     View for listing all profiles that are related to a profile.
@@ -101,7 +122,14 @@ class ProfileSelfRelationView(generics.ListAPIView):
         Get all profiles that are related to the authenticated profile.
         """
         profile = self.request.user
-        return ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile))
+        relations = ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile))
+        profiles = []
+        for relation in relations:
+            if relation.requester_profile == profile:
+                profiles.append(relation.receiver_profile)
+            else:
+                profiles.append(relation.requester_profile)
+        return profiles
 
 class ProfileAuthView(APIView):
     """
