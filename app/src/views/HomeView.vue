@@ -19,6 +19,7 @@ interface Profile {
 
 const profiles = ref<Profile[]>([]);
 const error = ref<string | null>(null);
+const loading = ref<boolean>(true);
 
 async function getList() {
   try {
@@ -30,6 +31,7 @@ async function getList() {
 
     if (response.status === 200) {
       profiles.value = response.data;
+      loading.value = false;
     }
   } catch (err) {
     error.value = "Error getting profiles, please try again later."
@@ -44,7 +46,8 @@ getList();
     <main>
       <Fragment v-if="profiles.length === 0">
         <p v-if="error">{{ error }}</p>
-        <p v-else>Loading...</p>
+        <p v-else-if="loading">Loading...</p>
+        <p v-else>No profiles found.</p>
       </Fragment>
       <ul v-else>
         <li v-for="profile in profiles" :key="profile.id">

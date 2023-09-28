@@ -84,16 +84,28 @@ class ProfileRelationView(generics.ListAPIView):
         """
         Get all profiles that are related to a profile.
         """
-        #profile = Profile.objects.get(id=self.kwargs['profile_id'])
-        profile = Profile.objects.get(requester=self.kwargs['profile_id'])
-        return ProfileRelation.objects.filter(Q(requester=profile) | Q(receiver=profile))
+        profile = Profile.objects.get(id=self.kwargs['id'])
+        return ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile))
+
+class ProfileSelfRelationView(generics.ListAPIView):
+    """
+    View for listing all profiles that are related to the authenticated profile.
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        """
+        Get all profiles that are related to the authenticated profile.
+        """
+        profile = self.request.user
+        return ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile))
 
 class ProfileAuthView(APIView):
     """
     View to check if a profile is authenticated, and if so, return the profile.
     Also, this view is used to refresh the access token.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
     def get(self, request):
         """
         Get the authenticated profile.
@@ -107,13 +119,9 @@ class ProfileAuthView(APIView):
         response = Response(data)
         if not request.user or not request.auth:
             try:
-                # get refresh token from cookie
                 refresh_token = request.COOKIES.get('refresh_token')
-                # test if refresh token is valid
                 refresh = RefreshToken(refresh_token)
-                # generate new access token if refresh token is valid
                 access_token = str(refresh.access_token)
-                # set access token in cookie
                 response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure)
 
             except Exception as e:
