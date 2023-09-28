@@ -4,7 +4,21 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from enum import Enum
 
+class ProfileStatusEnum(Enum):
+    offline = 1
+    active = 2
+    busy = 3
+    deleted = 4
+
+class ProfileRelationStatusEnum(Enum):
+    friend = 1
+    requested = 2
+    received = 3
+    blocked = 4
+    ignored = 5
+    rejected = 6
 
 class ProfileManager(BaseUserManager):
     """
@@ -39,7 +53,7 @@ class ProfileRelationStatus(models.Model):
     """
     Represents the status of a profile relation (e.g., friend, requested, received, blocked, ignored).
     Fields:
-        name: the name of the status [friend, requested, received, blocked, ignored]
+        name: the name of the status [requested, received, friend, blocked, ignored, rejected]
     """
     name = models.CharField(max_length=20, unique=True)
 
@@ -48,8 +62,7 @@ class ProfileRelationStatus(models.Model):
 
 @receiver(post_migrate)
 def populate_default_profile_relation_statuses(sender, **kwargs):
-    statuses = ['friend', 'requested', 'received', 'blocked', 'ignored']
-    for status in statuses:
+    for status in ProfileRelationStatusEnum:
         ProfileRelationStatus.objects.get_or_create(name=status)
 
 
@@ -68,8 +81,7 @@ class ProfileStatus(models.Model):
 
 @receiver(post_migrate)
 def populate_default_statuses(sender, **kwargs):
-    statuses = ['active', 'offline', 'busy', 'deleted']
-    for status in statuses:
+    for status in ProfileStatusEnum:
         ProfileStatus.objects.get_or_create(name=status)
 
 class Profile(AbstractBaseUser, PermissionsMixin):
@@ -78,7 +90,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(_('password'), max_length=128, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.ForeignKey(ProfileStatus, default=2, on_delete=models.CASCADE)
+    status = models.ForeignKey(ProfileStatus, default=ProfileStatusEnum.active, on_delete=models.CASCADE)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
