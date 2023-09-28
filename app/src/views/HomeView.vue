@@ -51,7 +51,7 @@ async function addFriend() {
 async function getList() {
   try {
     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL
-      }/api/profile/related/`, {
+      }/api/profile/friend/`, {
       withCredentials: true,
     });
 

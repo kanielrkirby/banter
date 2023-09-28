@@ -131,6 +131,27 @@ class ProfileSelfRelationView(generics.ListAPIView):
                 profiles.append(relation.requester_profile)
         return profiles
 
+class ProfileSelfFriendView(generics.ListAPIView):
+    """
+    View for listing all profiles that are friend|received|requested with the authenticated profile.
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        """
+        Get all profiles that are friends with the authenticated profile.
+        """
+        profile = self.request.user
+        relations = ProfileRelation.objects.filter(Q(requester_profile=profile) | Q(receiver_profile=profile), Q(status=1) | Q(status=2) | Q(status=3))
+        profiles = []
+        for relation in relations:
+            if relation.requester_profile == profile:
+                profiles.append(relation.receiver_profile)
+            else:
+                profiles.append(relation.requester_profile)
+        return profiles
+
+
 class ProfileAuthView(APIView):
     """
     View to check if a profile is authenticated, and if so, return the profile.
