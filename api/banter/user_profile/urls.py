@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProfilesView, ProfileView, ProfileSelfRelationView, ProfileAuthView, ProfileLogoutView, ProfileAddFriendView, ProfileSelfFriendView
+from .views import ProfilesView, ProfileView, ProfileSelfRelationView, ProfileAddFriendView, ProfileSelfFriendView
 from django.http import HttpResponse
 
 urlpatterns = [
@@ -8,6 +8,4 @@ urlpatterns = [
     path('<uuid:profile_id>/', ProfileView.as_view()),
     path('related/', ProfileSelfRelationView.as_view()),
     path('friend/', ProfileSelfFriendView.as_view()),
-    path('auth/', ProfileAuthView.as_view()),
-    path('logout/', ProfileLogoutView.as_view()),
 ]

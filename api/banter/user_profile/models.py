@@ -90,7 +90,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(_('password'), max_length=128, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.ForeignKey(ProfileStatus, default=ProfileStatusEnum.active, on_delete=models.CASCADE)
+    status = models.ForeignKey(ProfileStatus, default=ProfileStatusEnum.active.value, on_delete=models.CASCADE)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
