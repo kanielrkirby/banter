@@ -10,6 +10,8 @@ from .enums import RoomProfileStatusEnum, MessageStatusEnum, RoomStatuses
 from user_profile.enums import ProfileRoomStatusEnum
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Q
+from django.core.paginator import Paginator
+from rest_framework.pagination import CursorPagination
 
 class RoomView(APIView):
     """
@@ -177,10 +179,15 @@ class MessageView(APIView):
         message.save()
         return Response(status=204)
 
+class MessagesCursorPagination(CursorPagination):
+    page_size = 30
+    ordering = '-created_at'
+
 class MessagesView(APIView):
     """
     View for listing all messages in a room and creating a new message.
     """
+    pagination_class = MessagesCursorPagination
     permission_classes = [IsAuthenticated]
     def get(self, request, room_id):
         """
@@ -192,6 +199,7 @@ class MessagesView(APIView):
         if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin, ProfileRoomStatusEnum.member, ProfileRoomStatusEnum.muted]):
             return Response(status=403)
         messages = Message.objects.filter(room=room)
+        messages = self.paginate_queryset(messages, self.request, view=self)
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 
