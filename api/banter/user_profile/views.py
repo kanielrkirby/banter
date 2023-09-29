@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Profile, ProfileRelation, ProfileRoom
-from .serializers import ProfileSerializer
-from room.serializers import RoomSerializer
+from .serializers import ProfileSerializer, ProfileRelationSerializer
+from room.serializers import RoomSerializer, RoomProfileSerializer
 from .enums import ProfileStatusEnum, ProfileRelationStatusEnum
 from room.enums import RoomProfileStatusEnum
 from room.models import Room
@@ -142,7 +142,7 @@ class ProfileRoomView(APIView):
         profile = request.user
         room = Room.objects.get(id=room_id)
         profile_room = ProfileRoom.objects.get(profile=profile, room=room)
-        serializer = ProfileRoomSerializer(profile_room)
+        serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
 
     def put(self, request, room_id):
@@ -154,7 +154,7 @@ class ProfileRoomView(APIView):
         profile_room = ProfileRoom.objects.get(profile=profile, room=room)
         profile_room.status = RoomProfileStatusEnum[request.data['status']]
         profile_room.save()
-        serializer = ProfileRoomSerializer(profile_room)
+        serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
 
     def delete(self, request, room_id):
@@ -176,7 +176,7 @@ class ProfileRoomsView(generics.ListAPIView):
     View for listing all profile rooms and creating a new profile room.
     """
     pagination_class = ProfileRoomsCursorPagination
-    serializer_class = ProfileRoomSerializer
+    serializer_class = RoomProfileSerializer
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         """
@@ -196,5 +196,5 @@ class ProfileRoomsView(generics.ListAPIView):
             room=room,
             defaults={'status_id': 1}
         )
-        serializer = ProfileRoomSerializer(profile_room)
+        serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
