@@ -11,3 +11,7 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = '__all__'
 
+class RoomProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomProfile
+        fields = '__all__'

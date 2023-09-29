@@ -156,7 +156,7 @@ class ProfileRoomView(APIView):
         room = Room.objects.get(id=room_id)
         profile_room = ProfileRoom.objects.get(profile=profile, room=room)
         profile_room.delete()
-        return Response(status=204)o
+        return Response(status=204)
 
 class ProfileRoomsView(generics.ListAPIView):
     """

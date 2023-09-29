@@ -5,7 +5,8 @@ import uuid
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from enum import Enum
-from .enums import ProfileRelationStatus, ProfileStatus, ProfileRoomStatus
+from .enums import ProfileRelationStatusEnum, ProfileStatusEnum
+from room.enums import RoomProfileStatusEnum
 from room.models import Room
 
 class Profile(AbstractBaseUser, PermissionsMixin):
@@ -24,7 +25,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(_('password'), max_length=128, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileStatus])
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileStatusEnum])
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -53,7 +54,7 @@ class ProfileRelation(models.Model):
     """
     requester_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='requester_relations')
     receiver_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_relations')
-    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRelationStatus])
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRelationStatusEnum])
 
     class Meta:
         unique_together = ['requester_profile', 'receiver_profile']
@@ -73,7 +74,7 @@ class ProfileRoom(models.Model):
     """
     profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRoomStatus])
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in RoomProfileStatusEnum])
 
     class Meta:
         unique_together = ['profile', 'room']

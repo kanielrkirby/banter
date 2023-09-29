@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Q
+from .enums import RoomProfileStatusEnum
 
 class Room(models.Model):
     """
@@ -36,27 +38,29 @@ class Message(models.Model):
     body = models.TextField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.profile.name}: {self.body[:50]}..."  # Displaying the first 50 chars of the message
+        return f"{self.profile.name}: {self.body[:50]}..." 
 
-class ProfileMessage(models.Model):
+class RoomProfile(models.Model):
     """
-    Represents the mapping between a profile, a message, and the message's status for that profile.
+    Represents the relationship between a room and a profile.
     Fields:
+        room: the room
         profile: the profile
-        message: the message
-        status: the status of the message for the profile 
+        status: the status of the relationship [member, admin, owner]
     """
-    profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE, related_name='message_statuses')
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='profile_statuses')
-    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileMessageStatus])
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_profiles')
+    profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE, related_name='room_profiles')
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in RoomProfileStatusEnum])
 
     class Meta:
-        unique_together = ['profile', 'message']
+        unique_together = ['room', 'profile']
+        ordering = ['room', 'profile']
 
     def __str__(self):
-        return f"{self.profile.name} - {self.message.id} - {self.status.name}"
+        return f"{self.room.name} - {self.profile.name} - {self.status.name}"

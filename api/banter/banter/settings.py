@@ -11,57 +11,35 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-PORT = os.getenv('BACKEND_PORT') or 8000
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-loz0h1*3o7v^(e_3uqa%x=%=r5x4d2#ler4juqq4hgv9$mg0!)'
+SECRET_KEY = 'django-insecure-rr+7qfz(tqzgxomp2+*reo73$^c=oesj7&dg(u-wtwj+wx2ozm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG') or False
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    "*",
-    os.getenv('FRONTEND_HOST'),
-    f'{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}',
-]
+ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'user_profile.Profile'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
-    'channels_redis',
-
-    'corsheaders',
-    'rest_framework',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    'user_profile',
-    'room',
-    'custom_auth',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -70,21 +48,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    f'{os.getenv("FRONTEND_HOST")}:{os.getenv("FRONTEND_PORT")}',
-]
-
-CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'OPTIONS',
-]
-
-CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'banter.urls'
 
@@ -105,7 +68,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'banter.wsgi.application'
-ASGI_APPLICATION = 'banter.routing.application'
 
 
 # Database
@@ -113,41 +75,10 @@ ASGI_APPLICATION = 'banter.routing.application'
 
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'banter',
-         'USER': os.getenv('MYSQL_USER'),
-         'PASSWORD': os.getenv('MYSQL_PASSWORD'),
-         'HOST': os.getenv('MYSQL_HOST'),
-         'PORT': os.getenv('MYSQL_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/1",
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
-
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": 
-            [{
-                "address": os.getenv('REDIS_HOST'),
-                "port": os.getenv('REDIS_PORT'),
-                "db": 0,
-                "password": os.getenv('REDIS_PASSWORD'),
-            }],
-        },
-    },
-}
-
 
 
 # Password validation
@@ -190,22 +121,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-         'custom_auth.utils.CookieJWTAuthentication',
-    ),
-}
-
-import datetime
-JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER':
-    'rest_framework_jwt.utils.jwt_response_payload_handler',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
-    'JWT_ALLOW_REFRESH': True,
-}
-
