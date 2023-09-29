@@ -35,12 +35,15 @@ const password = ref('');
 
 async function login() {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/token/`, {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/token/obtain/`,
+    {
       username: username.value,
       password: password.value,
-    }, {
+    },
+    {
       withCredentials: true,
     });
+    console.log(response)
 
     if (response.status === 200) {
       loginUser({
@@ -50,7 +53,8 @@ async function login() {
       router.push({ name: 'home' });
     } else throw new Error();
   } catch (err) {
-    error.value = "Error logging in, please try again later."
+    error.value = "Error logging in"
+    console.log(err);
   }
 }
 </script>

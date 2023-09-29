@@ -44,7 +44,6 @@ async function signup() {
   }
 
   try {
-  console.log(`${import.meta.env.VITE_BACKEND_URL}}/api/profile/`)
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/profile/`, {
       username: username.value,
       password: password.value,
