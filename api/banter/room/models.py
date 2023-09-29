@@ -43,49 +43,20 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.profile.name}: {self.body[:50]}..."  # Displaying the first 50 chars of the message
 
-class MessageStatus(models.Model):
-    """
-    Represents the status of a message (e.g., sent, received, delivered, read, ignored, deleted).
-    Fields:
-        name: the name of the status [sent, received, delivered, read, ignored, deleted]
-    """
-    name = models.CharField(max_length=20, unique=True)
-
-    def __str__(self):
-        return self.name
-
-class ProfileMessageStatus(models.Model):
-    """
-    Represents the status of a message for a profile (e.g., read, delivered, etc.).
-    Fields:
-        name: the name of the status [sent, received, delivered, read, ignored, deleted]
-    """
-    name = models.CharField(max_length=20, unique=True)
-
-    class Meta:
-        verbose_name_plural = 'Profile Message Statuses'
-
-    def __str__(self):
-        return self.name
-
-class ProfileMessageStatusMapping(models.Model):
+class ProfileMessage(models.Model):
     """
     Represents the mapping between a profile, a message, and the message's status for that profile.
     Fields:
         profile: the profile
         message: the message
-        status: the status of the message for the profile
+        status: the status of the message for the profile 
     """
     profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE, related_name='message_statuses')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='profile_statuses')
-    status = models.ForeignKey(ProfileMessageStatus, on_delete=models.CASCADE, related_name='messages')
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileMessageStatus])
 
     class Meta:
         unique_together = ['profile', 'message']
-        verbose_name = 'Profile Message Status Mapping'
-        verbose_name_plural = 'Profile Message Status Mappings'
 
     def __str__(self):
         return f"{self.profile.name} - {self.message.id} - {self.status.name}"
-
-

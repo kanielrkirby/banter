@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView, CustomTokenRefreshView, CustomTokenDiscardView, PublicProfileSelfView
+from .views import Login, Refresh, Logout, PublicProfileSelfView
 
 urlpatterns = [
-    path('token/obtain/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
-    path('token/discard/', CustomTokenDiscardView.as_view(), name='token_discard'),
+    path('login/', Login.as_view(), name='token_obtain_pair'),
+    path('refresh/', Refresh.as_view(), name='token_refresh'),
+    path('logout/', Logout.as_view(), name='token_discard'),
     path('profile/', PublicProfileSelfView.as_view(), name='profile'),
 ]

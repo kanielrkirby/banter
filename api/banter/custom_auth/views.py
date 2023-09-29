@@ -11,7 +11,7 @@ import os
 secure = os.environ.get('SECURE', False)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+class Login(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:  
@@ -25,7 +25,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return TokenDiscardView().post(request, *args, **kwargs)
         return response
 
-class CustomTokenRefreshView(TokenRefreshView):
+class Refresh(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         request.data['refresh'] = request.COOKIES.get('refresh_token')
         response = super().post(request, *args, **kwargs)
@@ -38,7 +38,7 @@ class CustomTokenRefreshView(TokenRefreshView):
             return TokenDiscardView().post(request, *args, **kwargs)
         return response
 
-class CustomTokenDiscardView(APIView):
+class Logout(APIView):
     def post(self, request, *args, **kwargs):
         response = Response()
         response.delete_cookie('access_token')

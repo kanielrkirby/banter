@@ -1,21 +1,3 @@
-class ProfileRoomStatus(Enum):
-    """
-    Enum for the status of a profile in a room.
-    Fields:
-        owner: the profile is the owner of the room
-        admin: the profile is an admin of the room
-        member: the profile is a member of the room
-        muted: the profile is muted in the room
-        banned: the profile is banned from the room
-        ignored: the profile is ignored from joining the room
-    """
-    owner = 1
-    admin = 2
-    member = 3
-    muted = 4
-    banned = 5
-    ignored = 6
-
 class ProfileStatus(Enum):
     """
     Enum for the status of a profile.
@@ -47,3 +29,22 @@ class ProfileRelationStatus(Enum):
     blocked = 4
     ignored = 5
     rejected = 6
+
+class ProfileRoomStatus(Enum):
+    """
+    Enum for the status of a profile in a room.
+    Fields:
+        owner: the profile is the owner of the room
+        admin: the profile is an admin of the room
+        member: the profile is a member of the room
+        muted: the profile is muted in the room
+        banned: the profile is banned from the room
+        ignored: the profile is ignored from joining the room
+    """
+    owner = 1
+    admin = 2
+    member = 3
+    muted = 4
+    banned = 5
+    ignored = 6
+
