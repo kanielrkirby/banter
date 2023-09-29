@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     
     'user_profile',
     'room',
-    'custom_auth',
+    'user_auth',
 ]
 
 MIDDLEWARE = [

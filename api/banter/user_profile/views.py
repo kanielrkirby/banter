@@ -5,15 +5,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Profile, ProfileRelation, ProfileRoom
-from .serializers import ProfileSerializer, ProfileRelationSerializer, ProfileRoomSerializer
-from .enums import ProfileStatusEnum, ProfileRelationStatusEnum, ProfileRoomStatusEnum
-from room.models import Room
+from .serializers import ProfileSerializer
 from room.serializers import RoomSerializer
+from .enums import ProfileStatusEnum, ProfileRelationStatusEnum
+from room.enums import RoomProfileStatusEnum
+from room.models import Room
 import os
 from django.core.paginator import Paginator
 from rest_framework.pagination import CursorPagination
 
-secure = os.environ.get('SECURE', False)
+secure = os.environ.get('DJANGO_SECURE', False)
 
 class SelfProfileView(APIView):
     """
@@ -97,6 +98,10 @@ class ProfileRelationView(APIView):
         profile_relation.delete()
         return Response(status=204)
 
+class ProfileRelationsCursorPagination(CursorPagination):
+    page_size = 10
+    ordering = '-created_at'
+    
 class ProfileRelationsView(generics.ListAPIView):
     """
     View for listing all profile relations and creating a new profile relation.
@@ -125,10 +130,6 @@ class ProfileRelationsView(generics.ListAPIView):
         serializer = ProfileRelationSerializer(profile_relation)
         return Response(serializer.data)
 
-class ProfileRelationsCursorPagination(CursorPagination):
-    page_size = 10
-    ordering = '-created_at'
-
 class ProfileRoomView(APIView):
     """
     View for getting, updating, and deleting a profile room.
@@ -151,7 +152,7 @@ class ProfileRoomView(APIView):
         profile = request.user
         room = Room.objects.get(id=room_id)
         profile_room = ProfileRoom.objects.get(profile=profile, room=room)
-        profile_room.status = ProfileRoomStatusEnum[request.data['status']]
+        profile_room.status = RoomProfileStatusEnum[request.data['status']]
         profile_room.save()
         serializer = ProfileRoomSerializer(profile_room)
         return Response(serializer.data)

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from .models import Room, Message, RoomProfile
 from user_profile.models import Profile
 from user_profile.serializers import ProfileSerializer
-from .serializers import RoomSerializer, MessageSerializer, RoomProfileSerializer
+from .serializers import RoomSerializer, MessageSerializer
 from .enums import RoomProfileStatusEnum, MessageStatusEnum, RoomStatuses
 from user_profile.enums import ProfileRoomStatusEnum
 from rest_framework.permissions import IsAuthenticated, AllowAny

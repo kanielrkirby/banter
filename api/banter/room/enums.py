@@ -28,7 +28,7 @@ class RoomStatusEnum(Enum):
     active = 1
     deleted = 1
 
-class RoomProfileStatus(Enum):
+class RoomProfileStatusEnum(Enum):
     """
     Enum for the status of a profile in a room.
     Fields:

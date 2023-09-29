@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from enum import Enum
 from .enums import ProfileRelationStatusEnum, ProfileStatusEnum
 from room.enums import RoomProfileStatusEnum
 from room.models import Room
@@ -29,8 +28,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
-    objects = ProfileManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [

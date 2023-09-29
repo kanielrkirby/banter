@@ -1,6 +1,6 @@
 from enum import Enum
 
-class ProfileStatus(Enum):
+class ProfileStatusEnum(Enum):
     """
     Enum for the status of a profile.
     Fields:
@@ -14,7 +14,7 @@ class ProfileStatus(Enum):
     busy = 3
     deleted = 4
 
-class ProfileRelationStatus(Enum):
+class ProfileRelationStatusEnum(Enum):
     """
     Enum for the status of a profile relation.
     Fields:
