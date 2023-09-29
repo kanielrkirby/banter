@@ -6,36 +6,7 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from enum import Enum
 from .enums import ProfileRelationStatus, ProfileStatus, ProfileRoomStatus
-
-
-class ProfileManager(BaseUserManager):
-    """
-    Manager for the Profile model.
-    """
-    def create_user(self, username, password):
-        """
-        Create a user.
-        """
-        if not username:
-            raise ValueError('Users must have a username.')
-        
-        if not password:
-            raise ValueError('Users must have a password.')
-
-        user = self.model(username=username)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, username, password):
-        """
-        Create a superuser.
-        """
-        user = self.create_user(username, password=password)
-        user.is_superuser = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
+from room.models import Room
 
 class Profile(AbstractBaseUser, PermissionsMixin):
     """

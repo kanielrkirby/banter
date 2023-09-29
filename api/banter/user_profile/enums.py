@@ -1,3 +1,5 @@
+from enum import Enum
+
 class ProfileStatus(Enum):
     """
     Enum for the status of a profile.
