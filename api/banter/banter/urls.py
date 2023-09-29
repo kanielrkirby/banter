@@ -16,40 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import os
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
-secure = os.getenv('DJANGO_SECURE') or True
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:  
-            access_token = response.data['access']
-            refresh_token = response.data['refresh']
-            response.data = {} 
-            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
-            response.set_cookie('refresh_token', refresh_token, httponly=True, samesite='Lax', secure=secure)
-            response.data['id'] = request.user.id
-        return response
-from rest_framework_simplejwt.views import TokenRefreshView
-
-class CustomTokenRefreshView(TokenRefreshView):
-    def post(self, request, *args, **kwargs):
-        request.data['refresh'] = request.COOKIES.get('refresh_token')
-        
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
-            access_token = response.data['access']
-            response.data = {}  
-            response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
-            response.data['id'] = request.user.id
-        return response
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/profile/', include('user_profile.urls')),
     path('api/room/', include('room.urls')),
-    path('auth/', include('auth.urls')),
+    path('auth/', include('custom_auth.urls')),
 ]

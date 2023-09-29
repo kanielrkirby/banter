@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     
     'user_profile',
     'room',
+    'custom_auth',
 ]
 
 MIDDLEWARE = [
@@ -196,7 +197,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-         'user_profile.utils.CookieJWTAuthentication',
+         'custom_auth.utils.CookieJWTAuthentication',
     ),
 }
 

@@ -63,7 +63,7 @@ class ProfileRelationStatus(models.Model):
 @receiver(post_migrate)
 def populate_default_profile_relation_statuses(sender, **kwargs):
     for status in ProfileRelationStatusEnum:
-        ProfileRelationStatus.objects.get_or_create(name=status)
+        ProfileRelationStatus.objects.get_or_create(name=status.name)
 
 
 class ProfileStatus(models.Model):
@@ -82,7 +82,7 @@ class ProfileStatus(models.Model):
 @receiver(post_migrate)
 def populate_default_statuses(sender, **kwargs):
     for status in ProfileStatusEnum:
-        ProfileStatus.objects.get_or_create(name=status)
+        ProfileStatus.objects.get_or_create(name=status.name)
 
 class Profile(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
