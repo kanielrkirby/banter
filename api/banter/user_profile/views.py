@@ -10,6 +10,8 @@ from .enums import ProfileStatusEnum, ProfileRelationStatusEnum, ProfileRoomStat
 from room.models import Room
 from room.serializers import RoomSerializer
 import os
+from django.core.paginator import Paginator
+from rest_framework.pagination import CursorPagination
 
 secure = os.environ.get('SECURE', False)
 
@@ -99,13 +101,15 @@ class ProfileRelationsView(generics.ListAPIView):
     """
     View for listing all profile relations and creating a new profile relation.
     """
+    pagination_class = ProfileRelationsCursorPagination
     serializer_class = ProfileRelationSerializer
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         """
         Get all profile relations.
         """
-        return ProfileRelation.objects.all()
+        queryset = ProfileRoom.objects.all()
+        return self.paginate_queryset(queryset, self.request, view=self)
 
     def post(self, request):
         """
@@ -120,6 +124,10 @@ class ProfileRelationsView(generics.ListAPIView):
         )
         serializer = ProfileRelationSerializer(profile_relation)
         return Response(serializer.data)
+
+class ProfileRelationsCursorPagination(CursorPagination):
+    page_size = 10
+    ordering = '-created_at'
 
 class ProfileRoomView(APIView):
     """
@@ -158,17 +166,23 @@ class ProfileRoomView(APIView):
         profile_room.delete()
         return Response(status=204)
 
+class ProfileRoomsCursorPagination(CursorPagination):
+    page_size = 10
+    ordering = '-created_at'
+
 class ProfileRoomsView(generics.ListAPIView):
     """
     View for listing all profile rooms and creating a new profile room.
     """
+    pagination_class = ProfileRoomsCursorPagination
     serializer_class = ProfileRoomSerializer
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         """
         Get all profile rooms.
         """
-        return ProfileRoom.objects.all()
+        queryset = ProfileRelation.objects.all()
+        return self.paginate_queryset(queryset, self.request, view=self)
 
     def post(self, request):
         """
