@@ -5,20 +5,8 @@ import uuid
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from enum import Enum
+from .enums import ProfileRelationStatus, ProfileStatus, ProfileRoomStatus
 
-class ProfileStatusEnum(Enum):
-    offline = 1
-    active = 2
-    busy = 3
-    deleted = 4
-
-class ProfileRelationStatusEnum(Enum):
-    friend = 1
-    requested = 2
-    received = 3
-    blocked = 4
-    ignored = 5
-    rejected = 6
 
 class ProfileManager(BaseUserManager):
     """
@@ -49,48 +37,23 @@ class ProfileManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class ProfileRelationStatus(models.Model):
-    """
-    Represents the status of a profile relation (e.g., friend, requested, received, blocked, ignored).
-    Fields:
-        name: the name of the status [requested, received, friend, blocked, ignored, rejected]
-    """
-    name = models.CharField(max_length=20, unique=True)
-
-    def __str__(self):
-        return self.name
-
-@receiver(post_migrate)
-def populate_default_profile_relation_statuses(sender, **kwargs):
-    for status in ProfileRelationStatusEnum:
-        ProfileRelationStatus.objects.get_or_create(name=status.name)
-
-
-class ProfileStatus(models.Model):
-    """
-    Represents the status of a profile.
-    Fields:
-        id: the id of the status
-        name: the name of the status [active, offline, busy, deleted]
-    """
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, unique=True)
-
-    def __str__(self):
-        return self.name
-
-@receiver(post_migrate)
-def populate_default_statuses(sender, **kwargs):
-    for status in ProfileStatusEnum:
-        ProfileStatus.objects.get_or_create(name=status.name)
-
 class Profile(AbstractBaseUser, PermissionsMixin):
+    """
+    Represents a user profile.
+    Fields:
+        id: the unique identifier of the profile
+        username: the username of the profile
+        password: the password of the profile
+        created_at: the date and time the profile was created
+        updated_at: the date and time the profile was last updated
+        status: the status of the profile [active, offline, busy, deleted]
+    """
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(_('password'), max_length=128, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.ForeignKey(ProfileStatus, default=ProfileStatusEnum.active.value, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileStatus])
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -98,7 +61,10 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     objects = ProfileManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [
+        'username',
+        'password',
+    ]
 
     class Meta:
         ordering = ['-created_at']
@@ -112,11 +78,11 @@ class ProfileRelation(models.Model):
     Fields:
         requester_profile: the profile that initiated the relationship
         receiver_profile: the profile that received the relationship
-        status: the status of the relationship
+        status: the status of the relationship [friend, requested, received, blocked, ignored, rejected]
     """
     requester_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='requester_relations')
     receiver_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_relations')
-    status = models.ForeignKey(ProfileRelationStatus, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRelationStatus])
 
     class Meta:
         unique_together = ['requester_profile', 'receiver_profile']
@@ -124,3 +90,22 @@ class ProfileRelation(models.Model):
 
     def __str__(self):
         return f"{self.requester_profile.username} - {self.receiver_profile.username} - {self.status.name}"
+
+class ProfileRoom(models.Model):
+    """
+    Represents the relationship between profiles and rooms, 
+    capturing the status of a profile in a given room.
+    Fields:
+        profile: the profile
+        room: the room
+        status: the status of the profile in the room [owner, admin, member, muted, banned, ignored]
+    """
+    profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRoomStatus])
+
+    class Meta:
+        unique_together = ['profile', 'room']
+
+    def __str__(self):
+        return f"{self.profile.name} - {self.room.name} - {self.status.name}"

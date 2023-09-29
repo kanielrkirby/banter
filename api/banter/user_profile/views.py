@@ -9,8 +9,35 @@ from .serializers import ProfileSerializer, ProfileRelationStatusSerializer, Pro
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 import os
+from enum import Enum
+
+"""
+Contains the logic for the profile, relations between profiles, and the status of the relations,
+as well as relations between profiles and rooms.
+"""
 
 secure = os.environ.get('SECURE', False)
+
+
+class ProfileRoom(models.Model):
+    """
+    Represents the relationship between profiles and rooms, 
+    capturing the status of a profile in a given room.
+    Fields:
+        profile: the profile
+        room: the room
+        status: the status of the profile in the room
+    """
+    profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRoomStatus])
+
+    class Meta:
+        unique_together = ['profile', 'room']
+        ordering = ['room', 'status']
+
+    def __str__(self):
+        return f"{self.profile.name} - {self.room.name} - {self.status.name}"
 
 class ProfilesView(generics.ListAPIView):
     """
