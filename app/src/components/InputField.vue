@@ -18,44 +18,15 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { ref } from 'vue'
 
-export const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  id: {
-    type: String,
-    required: true,
-  },
-  modelValue: {
-    type: String,
-    required: true,
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
-  maxlength: {
-    type: Number,
-    default: 100,
-  },
-  minlength: {
-    type: Number,
-    default: 0,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-})
+const label = ref('')
+const type = ref('text')
+const name = ref('')
+const id = ref('')
+const modelValue = ref('')
+const placeholder = ref('')
+const maxlength = ref(100)
+const minlength = ref(0)
+const required = ref(false)
 </script>
