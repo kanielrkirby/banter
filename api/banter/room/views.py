@@ -6,8 +6,7 @@ from .models import Room, Message, RoomProfile
 from user_profile.models import Profile
 from user_profile.serializers import ProfileSerializer
 from .serializers import RoomSerializer, MessageSerializer
-from .enums import RoomProfileStatusEnum, MessageStatusEnum, RoomStatuses
-from user_profile.enums import ProfileRoomStatusEnum
+from .enums import RoomProfileStatusEnum, ProfileMessageStatusEnum, RoomStatusEnum
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -25,7 +24,7 @@ class RoomView(APIView):
         room = Room.objects.get(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin, ProfileRoomStatusEnum.member]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
             return Response(status=403)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
@@ -35,7 +34,7 @@ class RoomView(APIView):
         Create a room.
         """
         room = Room.objects.create(name=request.data['name'])
-        profile_room = RoomProfile.objects.create(profile=request.user, room=room, status=ProfileRoomStatusEnum.owner)
+        profile_room = RoomProfile.objects.create(profile=request.user, room=room, status=RoomProfileStatusEnum.owner)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -46,7 +45,7 @@ class RoomView(APIView):
         room = Room.objects.get_object_or_404(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
             return Response(status=403)
         room.name = request.data['name']
         room.save()
@@ -60,9 +59,9 @@ class RoomView(APIView):
         room = Room.objects.get_object_or_404(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner]):
             return Response(status=403)
-        room.status = RoomStatuses.deleted
+        room.status = RoomStatusEnum.deleted.value
         return Response(status=204)
 
 class RoomProfileView(APIView):
@@ -78,7 +77,7 @@ class RoomProfileView(APIView):
         room = Room.objects.get(id=room_id)
         if not profile or not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin, ProfileRoomStatusEnum.member]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         serializer = RoomProfileSerializer(profile_room)
@@ -92,7 +91,7 @@ class RoomProfileView(APIView):
         room = Room.objects.get(id=room_id)
         if not profile or not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.status = request.data['status']
@@ -108,7 +107,7 @@ class RoomProfileView(APIView):
         room = Room.objects.get(id=room_id)
         if not profile or not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.delete()
@@ -126,7 +125,7 @@ class RoomProfilesView(APIView):
         room = Room.objects.get(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin, ProfileRoomStatusEnum.member]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
             return Response(status=403)
         profile_rooms = RoomProfile.objects.filter(room=room)
         serializer = RoomProfileSerializer(profile_rooms, many=True)
@@ -139,10 +138,10 @@ class RoomProfilesView(APIView):
         room = Room.objects.get(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
             return Response(status=403)
         profile = Profile.objects.get(id=request.data['profile'])
-        profile_room = RoomProfile.objects.create(profile=profile, room=room, status=ProfileRoomStatusEnum.member)
+        profile_room = RoomProfile.objects.create(profile=profile, room=room, status=RoomProfileStatusEnum.member)
         serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
 
@@ -196,7 +195,7 @@ class MessagesView(APIView):
         room = Room.objects.get(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[ProfileRoomStatusEnum.owner, ProfileRoomStatusEnum.admin, ProfileRoomStatusEnum.member, ProfileRoomStatusEnum.muted]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member, RoomProfileStatusEnum.muted]):
             return Response(status=403)
         messages = Message.objects.filter(room=room)
         messages = self.paginate_queryset(messages, self.request, view=self)

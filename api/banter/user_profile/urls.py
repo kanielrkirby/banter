@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SelfView, ProfileView, ProfileRelationView, ProfileRelationsView, ProfileRoomView, ProfileRoomsView
+from .views import SelfProfileView, ProfileView, ProfileRelationView, ProfileRelationsView, ProfileRoomView, ProfileRoomsView
 from django.http import HttpResponse
 
 urlpatterns = [

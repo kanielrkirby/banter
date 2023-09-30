@@ -26,7 +26,7 @@ class RoomStatusEnum(Enum):
         deleted: the room is deleted
     """
     active = 1
-    deleted = 1
+    deleted = 2
 
 class RoomProfileStatusEnum(Enum):
     """
