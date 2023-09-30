@@ -1,8 +1,10 @@
 <template>
-  <main>
-    <h1>{{ title }}</h1>
-    <slot></slot>
-  </main>
+  <div class="bg-black">
+    <main>
+      <h1>{{ title }}</h1>
+      <slot></slot>
+    </main>
+  </div>
 </template>
 
 <script setup>

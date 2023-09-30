@@ -1,7 +1,10 @@
 <template>
-  <CenterCard title="Sign Up">
+  <CardLayout title="Sign Up">
+
     <template v-if="error">
-      <p>{{ error }}</p>
+      <Status error >
+        <p>{{ error }}</p>
+      </Status>
     </template>
 
     <form @submit.prevent="signup">
@@ -14,14 +17,14 @@
 
       <Button type="submit">Sign Up</Button>
     </form>
-  </CenterCard>
+  </CardLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import CenterCard from '@/components/CenterCard.vue';
+import CardLayout from '@/layouts/CardLayout.vue';
 import InputField from '@/components/InputField.vue';
 import Button from '@/components/Button.vue';
 

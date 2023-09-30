@@ -80,7 +80,7 @@ getList();
 
 <template>
   <Layout>
-    <main>
+    <main class="bg-black">
       <template v-if="profiles.length === 0 && rooms.length === 0">
         <p v-if="error">{{ error }}</p>
         <p v-else-if="loading">Loading...</p>
