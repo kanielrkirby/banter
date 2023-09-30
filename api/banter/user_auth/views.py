@@ -7,20 +7,10 @@ from user_profile.serializers import ProfileSerializer
 from user_profile.enums import ProfileStatusEnum
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken
+from .serializers import CustomTokenObtainPairSerializer
 import os
 
 secure = os.environ.get('SECURE', False)
-
-class TokenDiscardView(APIView):
-    """
-    View for discarding a profile's access token.
-    """
-    permission_classes = []
-    def post(self, request, *args, **kwargs):
-        response = Response()
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
-        return response
 
 class Signup(generics.CreateAPIView):
     """
@@ -30,7 +20,7 @@ class Signup(generics.CreateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = []
     def post(self, request, *args, **kwargs):
-        profile = Profile.objects.create_user(username=request.data['username'], password=request.data['password'], status=ProfileStatusEnum.offline.name)
+        profile = Profile.objects.create_user(username=request.data['username'], email=request.data['email'], password=request.data['password'], status=ProfileStatusEnum.offline.name)
         response = super().post(request, *args, **kwargs)
         if response.status_code >= 200 and response.status_code < 300:
             response.data = {} 
@@ -40,6 +30,7 @@ class Login(TokenObtainPairView):
     """
     View for logging in a profile.
     """
+    serializer_class = CustomTokenObtainPairSerializer
     permission_classes = []
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
@@ -49,9 +40,11 @@ class Login(TokenObtainPairView):
             response.data = {} 
             response.set_cookie('access_token', access_token, httponly=True, samesite='Lax', secure=secure) 
             response.set_cookie('refresh_token', refresh_token, httponly=True, samesite='Lax', secure=secure)
-            response.data['user'] = ProfileSerializer(Profile.objects.get(id=AccessToken(access_token).payload['user_id'])).data
+            user = Profile.objects.get(id=AccessToken(access_token).payload['user_id'])
+            user.password = None
+            response.data['user'] = ProfileSerializer(user).data
         else:
-            return TokenDiscardView().post(request, *args, **kwargs)
+            return Logout().post(request, *args, **kwargs)
         return response
 
 class Refresh(TokenRefreshView):

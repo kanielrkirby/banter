@@ -11,6 +11,10 @@
       <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required
         autocomplete="username" />
 
+      <label for="email">Email</label>
+      <input v-model="email" type="email" name="email" id="email" maxlength="40" minlength="3" required
+        autocomplete="email" />
+
       <label for="password">Password</label>
       <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
         autocomplete="password" />
@@ -34,6 +38,7 @@ const router = useRouter();
 const error = ref<string | null>(null)
 
 const username = ref('');
+const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
@@ -46,6 +51,7 @@ async function signup() {
   try {
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup/`, {
       username: username.value,
+      email: email.value,
       password: password.value,
     });
 
