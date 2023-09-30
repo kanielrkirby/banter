@@ -1,15 +1,11 @@
 <template>
-  <CardLayout title="Login" >
-
-      <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="8" required
-        autocomplete="email" />
-
-      <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required
-        autocomplete="password" />
-
-      <a href="/signup" class="link-primary-accent">Need an account?</a>
-
-      <button class="btn-secondary-accent" type="submit">Login</button>
+  <CardLayout title="Login" :error="error">
+    <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="8" required
+      autocomplete="email" />
+    <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required                                                                                                                                                              
+      autocomplete="password" />
+    <a href="/signup" class="link-primary-accent">Need an account?</a>
+    <button class="btn-secondary-accent" type="submit">Login</button>
   </CardLayout>
 </template>
 

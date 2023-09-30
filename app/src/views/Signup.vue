@@ -1,22 +1,13 @@
 <template>
-  <CardLayout title="Sign Up">
+  <CardLayout title="Sign Up" :error="error" :submit="signup">
+    <InputField v-model="username" label="Username" type="text" name="username" id="username" maxlength="40" minlength="3" required autocomplete="username" />
+    <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="3" required autocomplete="email" />
+    <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
+    <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" maxlength="40" minlength="8" required autocomplete="password" /> 
 
-    <template v-if="error">
-      <Status error >
-        <p>{{ error }}</p>
-      </Status>
-    </template>
+    <a class="link-primary-accent" href="/login">Already have an account?</a>
 
-    <form @submit.prevent="signup">
-      <InputField v-model="username" label="Username" type="text" name="username" id="username" maxlength="40" minlength="3" required autocomplete="username" />
-      <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="3" required autocomplete="email" />
-      <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
-      <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" maxlength="40" minlength="8" required autocomplete="password" />
-
-      <a class="link-primary-accent" href="/login">Already have an account?</a>
-
-      <button class="btn-secondary-accent" type="submit">Sign Up</button>
-    </form>
+    <button class="btn-secondary-accent" type="submit">Sign Up</button>
   </CardLayout>
 </template>
 
@@ -29,7 +20,7 @@ import InputField from '@/components/InputField.vue';
 
 const router = useRouter();
 
-const error = ref<string | null>(null)
+const error = ref<string | undefined>()
 
 const username = ref('');
 const email = ref('');
