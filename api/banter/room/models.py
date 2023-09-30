@@ -40,11 +40,16 @@ class Message(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        self.room.updated_at = timezone.now()
+        self.room.save()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.profile.name}: {self.body[:50]}..." 
+        return f"{self.profile.username}: {self.body[:50]}..." 
 
 class RoomProfile(models.Model):
     """
@@ -54,7 +59,7 @@ class RoomProfile(models.Model):
         profile: the profile
         status: the status of the relationship [member, admin, owner]
     """
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_profiles')
+    room = models.ForeignKey('room.Room', on_delete=models.CASCADE, related_name='room_profiles')
     profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE, related_name='room_profiles')
     status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in RoomProfileStatusEnum])
 
@@ -66,4 +71,6 @@ class RoomProfile(models.Model):
         return self.requester_profile.updated_at
 
     def __str__(self):
-        return f"{self.room.name} - {self.profile.name} - {self.status.name}"
+        return f"{self.room.name} - {self.profile.username} - {self.status.name}"
+
+

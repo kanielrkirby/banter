@@ -101,7 +101,7 @@ class ProfileRelationView(APIView):
 
 class ProfileRelationsCursorPagination(CursorPagination):
     page_size = 10
-    ordering = 'requester_profile_updated_at_proxy'
+    ordering = '-updated_at'
     
 class ProfileRelationsView(generics.ListAPIView):
     """
@@ -118,7 +118,7 @@ class ProfileRelationsView(generics.ListAPIView):
         queryset = ProfileRelation.objects.all()
         if status is not None:
             queryset = queryset.filter(status=status)
-        return queryset.annotate(requester_profile_updated_at_proxy=F('requester_profile__updated_at'))
+        return queryset
 
     def post(self, request):
         """

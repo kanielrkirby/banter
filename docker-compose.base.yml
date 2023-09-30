@@ -21,8 +21,8 @@ services:
     volumes:
       - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-      interval: 3s
+      test: ["CMD-SHELL", "echo 'SELECT 1' | mysql -u root -p${MYSQL_ROOT_PASSWORD} && exit 0 || exit 1"]
+      interval: 5s
       timeout: 20s
       retries: 10
 

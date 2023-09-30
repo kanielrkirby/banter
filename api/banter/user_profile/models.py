@@ -5,8 +5,6 @@ import uuid
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from .enums import ProfileRelationStatusEnum, ProfileStatusEnum
-from room.enums import RoomProfileStatusEnum
-from room.models import Room
 
 class ProfileManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -80,14 +78,13 @@ class ProfileRelation(models.Model):
     """
     requester_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='requester_relations')
     receiver_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_relations')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in ProfileRelationStatusEnum])
 
     class Meta:
         unique_together = ['requester_profile', 'receiver_profile']
         ordering = ['requester_profile', 'receiver_profile']
-
-    def requester_profile_updated_at_proxy(self):
-        return self.requester_profile.updated_at
 
     def __str__(self):
         return f"{self.requester_profile.username} - {self.receiver_profile.username} - {self.status.name}"

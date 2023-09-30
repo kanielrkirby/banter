@@ -8,6 +8,7 @@ services:
       - ${BACKEND_PORT}:${BACKEND_PORT}
     environment:
       - DJANGO_DEBUG=True
+        #command: tail -f /dev/null
   vue:
     build:
       context: app
