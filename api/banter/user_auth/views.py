@@ -7,10 +7,20 @@ from user_profile.serializers import ProfileSerializer
 from user_profile.enums import ProfileStatusEnum
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken
-from banter.custom_auth.views import TokenDiscardView
 import os
 
 secure = os.environ.get('SECURE', False)
+
+class TokenDiscardView(APIView):
+    """
+    View for discarding a profile's access token.
+    """
+    permission_classes = []
+    def post(self, request, *args, **kwargs):
+        response = Response()
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
 
 class Signup(generics.CreateAPIView):
     """
