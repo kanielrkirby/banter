@@ -1,6 +1,5 @@
 <template>
-  <main>
-    <h1>Login</h1>
+  <CenterCard title="Login">
 
     <Fragment v-if="error">
       <p>{{ error }}</p>
@@ -8,17 +7,15 @@
 
     <form @submit.prevent="login">
 
-      <label for="email">Email</label>
-      <input v-model="email" type="email" name="email" id="email" maxlength="40" minlength="8" required
+      <InputField v-model="email" type="email" name="email" id="email" maxlength="40" minlength="8" required
         autocomplete="email" />
 
-      <label for="password">Password</label>
-      <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
-        autocomplete="current-password" />
+      <InputField v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
+        autocomplete="password" />
 
-      <button type="submit">Login</button>
+      <Button type="submit">Login</Button>
     </form>
-  </main>
+  </CenterCard>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +23,9 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { loginUser } from '@/stores/user';
+import CenterCard from '@/components/CenterCard.vue';
+import InputField from '@/components/InputField.vue';
+import Button from '@/components/Button.vue';
 
 const router = useRouter();
 
