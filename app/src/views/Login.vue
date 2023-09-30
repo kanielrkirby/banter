@@ -35,7 +35,7 @@ const password = ref('');
 
 async function login() {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/token/obtain/`,
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login/`,
     {
       username: username.value,
       password: password.value,

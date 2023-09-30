@@ -4,15 +4,16 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Profile, ProfileRelation, ProfileRoom
+from .models import Profile, ProfileRelation
 from .serializers import ProfileSerializer, ProfileRelationSerializer
 from room.serializers import RoomSerializer, RoomProfileSerializer
 from .enums import ProfileStatusEnum, ProfileRelationStatusEnum
 from room.enums import RoomProfileStatusEnum
-from room.models import Room
+from room.models import Room, RoomProfile
 import os
 from django.core.paginator import Paginator
 from rest_framework.pagination import CursorPagination
+from django.db.models import F
 
 secure = os.environ.get('DJANGO_SECURE', False)
 
@@ -100,7 +101,7 @@ class ProfileRelationView(APIView):
 
 class ProfileRelationsCursorPagination(CursorPagination):
     page_size = 10
-    ordering = '-created_at'
+    ordering = 'requester_profile_updated_at_proxy'
     
 class ProfileRelationsView(generics.ListAPIView):
     """
@@ -113,8 +114,11 @@ class ProfileRelationsView(generics.ListAPIView):
         """
         Get all profile relations.
         """
-        queryset = ProfileRoom.objects.all()
-        return self.paginate_queryset(queryset, self.request, view=self)
+        status = self.request.query_params.get('status', None)
+        queryset = ProfileRelation.objects.all()
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        return queryset.annotate(requester_profile_updated_at_proxy=F('requester_profile__updated_at'))
 
     def post(self, request):
         """
@@ -141,7 +145,7 @@ class ProfileRoomView(APIView):
         """
         profile = request.user
         room = Room.objects.get(id=room_id)
-        profile_room = ProfileRoom.objects.get(profile=profile, room=room)
+        profile_room = RoomProfile.objects.get(profile=profile, room=room)
         serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
 
@@ -151,7 +155,7 @@ class ProfileRoomView(APIView):
         """
         profile = request.user
         room = Room.objects.get(id=room_id)
-        profile_room = ProfileRoom.objects.get(profile=profile, room=room)
+        profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.status = RoomProfileStatusEnum[request.data['status']]
         profile_room.save()
         serializer = RoomProfileSerializer(profile_room)
@@ -163,13 +167,13 @@ class ProfileRoomView(APIView):
         """
         profile = request.user
         room = Room.objects.get(id=room_id)
-        profile_room = ProfileRoom.objects.get(profile=profile, room=room)
+        profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.delete()
         return Response(status=204)
 
 class ProfileRoomsCursorPagination(CursorPagination):
     page_size = 10
-    ordering = '-created_at'
+    ordering = 'room_updated_at_proxy'
 
 class ProfileRoomsView(generics.ListAPIView):
     """
@@ -182,8 +186,7 @@ class ProfileRoomsView(generics.ListAPIView):
         """
         Get all profile rooms.
         """
-        queryset = ProfileRelation.objects.all()
-        return self.paginate_queryset(queryset, self.request, view=self)
+        return RoomProfile.objects.annotate(room_updated_at_proxy=F('room__updated_at'))
 
     def post(self, request):
         """
@@ -191,7 +194,7 @@ class ProfileRoomsView(generics.ListAPIView):
         """
         profile = request.user
         room = Room.objects.get(id=request.data['room'])
-        profile_room, created = ProfileRoom.objects.update_or_create(
+        profile_room, created = RoomProfile.objects.update_or_create(
             profile=profile,
             room=room,
             defaults={'status_id': 1}

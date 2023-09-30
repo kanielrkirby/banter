@@ -51,7 +51,7 @@ async function addFriend() {
 async function getList() {
   try {
     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL
-      }/api/profile/friend/`, {
+      }/profile/relations?status=friend/`, {
       withCredentials: true,
     });
 
@@ -63,7 +63,7 @@ async function getList() {
     error.value = "Error getting profiles, please try again later."
   }
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/room/profile/`, {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms/`, {
       withCredentials: true,
     });
     if (response.status === 200) {

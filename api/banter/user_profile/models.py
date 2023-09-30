@@ -86,24 +86,9 @@ class ProfileRelation(models.Model):
         unique_together = ['requester_profile', 'receiver_profile']
         ordering = ['requester_profile', 'receiver_profile']
 
+    def requester_profile_updated_at_proxy(self):
+        return self.requester_profile.updated_at
+
     def __str__(self):
         return f"{self.requester_profile.username} - {self.receiver_profile.username} - {self.status.name}"
 
-class ProfileRoom(models.Model):
-    """
-    Represents the relationship between profiles and rooms, 
-    capturing the status of a profile in a given room.
-    Fields:
-        profile: the profile
-        room: the room
-        status: the status of the profile in the room [owner, admin, member, muted, banned, ignored]
-    """
-    profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in RoomProfileStatusEnum])
-
-    class Meta:
-        unique_together = ['profile', 'room']
-
-    def __str__(self):
-        return f"{self.profile.name} - {self.room.name} - {self.status.name}"

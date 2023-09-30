@@ -62,5 +62,8 @@ class RoomProfile(models.Model):
         unique_together = ['room', 'profile']
         ordering = ['room', 'profile']
 
+    def room_updated_at_proxy(self):
+        return self.requester_profile.updated_at
+
     def __str__(self):
         return f"{self.room.name} - {self.profile.name} - {self.status.name}"

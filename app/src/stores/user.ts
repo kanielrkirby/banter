@@ -1,12 +1,9 @@
-// user.js
 import { ref, reactive } from 'vue';
 import axios from 'axios';
 import router from '../router';
 
-// Create a ref for the user's authentication status
 const isAuthenticated = ref(false);
 
-// Create a user object using reactive
 const user = reactive<{
   id: number | null;
   username: string;
@@ -15,7 +12,6 @@ const user = reactive<{
   username: '',
 });
 
-// Functions to update user data and authentication status
 function loginUser(userData: { id: number; username: string }) {
   isAuthenticated.value = true;
   user.id = userData.id;
@@ -24,7 +20,7 @@ function loginUser(userData: { id: number; username: string }) {
 
 async function refresh() {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/token/refresh/`,
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh/`,
       {},
       { withCredentials: true });
     const data = response.data;
@@ -46,7 +42,7 @@ function logoutUser() {
     id: null,
     username: '',
   });
-  axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/token/discard/`,
+  axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/logout/`,
     {},
     { withCredentials: true });
   if (location.pathname !== '/login' && location.pathname !== '/signup')
@@ -55,7 +51,7 @@ function logoutUser() {
 
 async function checkAuth() {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/profile/`,
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/self/`,
       { withCredentials: true });
     const data = response.data;
     console.log(data);
@@ -69,7 +65,4 @@ async function checkAuth() {
   }
 }
 
-
-
 export { isAuthenticated, user, loginUser, logoutUser, checkAuth };
-
