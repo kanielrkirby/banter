@@ -1,37 +1,26 @@
 <template>
-  <main>
-    <h1>Sign Up</h1>
-
+  <CenterCard title="Sign Up">
     <template v-if="error">
       <p>{{ error }}</p>
     </template>
 
     <form @submit.prevent="signup">
-      <label for="username">Username</label>
-      <input v-model="username" type="text" name="username" id="username" maxlength="40" minlength="3" required
-        autocomplete="username" />
-
-      <label for="email">Email</label>
-      <input v-model="email" type="email" name="email" id="email" maxlength="40" minlength="3" required
-        autocomplete="email" />
-
-      <label for="password">Password</label>
-      <input v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
-        autocomplete="password" />
-
-      <label for="confirmPassword">Confirm Password</label>
-      <input v-model="confirmPassword" type="password" name="confirmPassword" id="confirmPassword" maxlength="40"
-        minlength="8" required autocomplete="password" />
-
-      <button type="submit">Sign Up</button>
+      <InputField v-model="username" label="Username" type="text" name="username" id="username" maxlength="40" minlength="3" required autocomplete="username" />
+      <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="3" required autocomplete="email" />
+      <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
+      <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" maxlength="40" minlength="8" required autocomplete="password" />
+      <Button type="submit">Sign Up</Button>
     </form>
-  </main>
+  </CenterCard>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import CenterCard from '@/components/CenterCard.vue';
+import InputField from '@/components/InputField.vue';
+import Button from '@/components/Button.vue';
 
 const router = useRouter();
 
