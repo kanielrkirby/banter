@@ -13,6 +13,8 @@
       <InputField v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
         autocomplete="password" />
 
+      <a href="/signup">Need an account?</a>
+
       <Button type="submit">Login</Button>
     </form>
   </CenterCard>

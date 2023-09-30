@@ -9,6 +9,9 @@
       <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="3" required autocomplete="email" />
       <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
       <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" maxlength="40" minlength="8" required autocomplete="password" />
+
+      <a href="/login">Already have an account?</a>
+
       <Button type="submit">Sign Up</Button>
     </form>
   </CenterCard>
