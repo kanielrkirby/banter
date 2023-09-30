@@ -1,5 +1,5 @@
 <template>
-  <CenterCard title="Login">
+  <CardLayout title="Login">
 
     <Fragment v-if="error">
       <p>{{ error }}</p>
@@ -17,7 +17,7 @@
 
       <Button type="submit">Login</Button>
     </form>
-  </CenterCard>
+  </CardLayout>
 </template>
 
 <script setup lang="ts">
@@ -25,7 +25,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { loginUser } from '@/stores/user';
-import CenterCard from '@/components/CenterCard.vue';
+import CardLayout from '@/layouts/CardLayout.vue';
 import InputField from '@/components/InputField.vue';
 import Button from '@/components/Button.vue';
 

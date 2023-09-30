@@ -1,19 +1,14 @@
 <template>
-  <div class="bg-black">
-    <main>
+  <div class="w-full h-full flex justify-center items-center">
+    <main class="bg-secondary p-8 rounded-md flex flex-col">
       <h1>{{ title }}</h1>
-      <slot></slot>
+      <slot />
     </main>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+  import { ref } from 'vue'
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true
-  }
-})
+  const title = ref('', { required: true })
 </script>
