@@ -1,22 +1,15 @@
 <template>
-  <CardLayout title="Login">
+  <CardLayout title="Login" >
 
-    <Fragment v-if="error">
-      <p>{{ error }}</p>
-    </Fragment>
-
-    <form @submit.prevent="login">
-
-      <InputField v-model="email" type="email" name="email" id="email" maxlength="40" minlength="8" required
+      <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="8" required
         autocomplete="email" />
 
-      <InputField v-model="password" type="password" name="password" id="password" maxlength="40" minlength="8" required
+      <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required
         autocomplete="password" />
 
-      <a href="/signup">Need an account?</a>
+      <a href="/signup" class="text-secondary-accent self-start text-sm hover:underline hover:brightness-125 transition-all duration-100">Need an account?</a>
 
       <Button type="submit">Login</Button>
-    </form>
   </CardLayout>
 </template>
 

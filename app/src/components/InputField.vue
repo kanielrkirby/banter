@@ -1,32 +1,34 @@
 <template>
-    <label :for="id">
+    <label :for="id" class="w-full">
       <span>
-        {{ label }}
       </span>
     <input
       :type="type"
       :name="name"
       :id="id"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-      :placeholder="placeholder"
+      :placeholder="placeholder ?? label"
       :maxlength="maxlength"
       :minlength="minlength"
       :required="required"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      class="bg-primary placeholder:text-white px-3 py-1.5 rounded-md w-full placeholder:opacity-50"
     />
     </label>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang='ts'>
+import { defineProps } from 'vue'
 
-const label = ref('')
-const type = ref('text')
-const name = ref('')
-const id = ref('')
-const modelValue = ref('')
-const placeholder = ref('')
-const maxlength = ref(100)
-const minlength = ref(0)
-const required = ref(false)
+const props = defineProps({
+  label: { type: String, required: true },
+  type: { type: String, required: false },
+  name: { type: String, required: true },
+  id: { type: String, required: true },
+  modelValue: { type: String, required: true },
+  placeholder: { type: String, required: false },
+  maxlength: { type: Number, required: false },
+  minlength: { type: Number, required: false },
+  required: { type: Boolean, required: false },
+})
 </script>

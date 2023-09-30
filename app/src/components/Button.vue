@@ -1,5 +1,5 @@
 <template>
-  <button class="">
+  <button class="btn-secondary-accent">
     <slot></slot>
   </button>
 </template>
@@ -13,5 +13,5 @@ const props = defineProps({
     default: 'button',
   },
 })
-
 </script>
+
