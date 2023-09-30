@@ -7,9 +7,9 @@
       <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required
         autocomplete="password" />
 
-      <a href="/signup" class="text-secondary-accent self-start text-sm hover:underline hover:brightness-125 transition-all duration-100">Need an account?</a>
+      <a href="/signup" class="link-primary-accent">Need an account?</a>
 
-      <Button type="submit">Login</Button>
+      <button class="btn-secondary-accent" type="submit">Login</button>
   </CardLayout>
 </template>
 
@@ -20,7 +20,6 @@ import { useRouter } from 'vue-router';
 import { loginUser } from '@/stores/user';
 import CardLayout from '@/layouts/CardLayout.vue';
 import InputField from '@/components/InputField.vue';
-import Button from '@/components/Button.vue';
 
 const router = useRouter();
 

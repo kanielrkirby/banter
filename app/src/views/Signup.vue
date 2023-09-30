@@ -13,9 +13,9 @@
       <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
       <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" maxlength="40" minlength="8" required autocomplete="password" />
 
-      <a href="/login">Already have an account?</a>
+      <a class="link-primary-accent" href="/login">Already have an account?</a>
 
-      <Button type="submit">Sign Up</Button>
+      <button class="btn-secondary-accent" type="submit">Sign Up</button>
     </form>
   </CardLayout>
 </template>
@@ -26,7 +26,6 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import CardLayout from '@/layouts/CardLayout.vue';
 import InputField from '@/components/InputField.vue';
-import Button from '@/components/Button.vue';
 
 const router = useRouter();
 
