@@ -31,7 +31,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [
-        'username',
         'password',
     ]
 
