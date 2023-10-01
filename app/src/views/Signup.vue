@@ -38,7 +38,8 @@ async function signup() {
       password: password.value,
     });
 
-    if (response.status === 200) {
+console.log(response)
+    if (response.status >= 200 && response.status < 300) {
       router.push({ name: 'login' })
     }
   } catch (err) {

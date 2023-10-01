@@ -36,7 +36,7 @@ async function login() {
       });
     console.log(response)
 
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300 && response.data.user) {
       loginUser(
         response.data.user
       )
