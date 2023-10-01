@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from .enums import ProfileRelationStatusEnum, ProfileStatusEnum
 
 class ProfileManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
+    def create_user(self, username, email, status, password=None, **extra_fields):
         """
         Create and return a regular user with the given username and password.
         """
@@ -15,7 +15,7 @@ class ProfileManager(BaseUserManager):
             raise ValueError('The Username field must be set')
         if not email:
             raise ValueError('The Email field must be set')
-        user = self.model(username=username, email=email, **extra_fields)
+        user = self.model(username=username, email=email, status=status, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user

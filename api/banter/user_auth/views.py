@@ -16,14 +16,14 @@ class Signup(generics.CreateAPIView):
     """
     View for creating a new profile.
     """
-    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = []
     def post(self, request, *args, **kwargs):
+        if Profile.objects.filter(email=request.data['email']).exists():
+            return Response("User with that email already exists", status=400)
         profile = Profile.objects.create_user(username=request.data['username'], email=request.data['email'], password=request.data['password'], status=ProfileStatusEnum.offline.name)
-        response = super().post(request, *args, **kwargs)
-        if response.status_code >= 200 and response.status_code < 300:
-            response.data = {} 
+        profile.save()
+        response = Response("Profile created successfully", status=201)
         return response
 
 class Login(TokenObtainPairView):

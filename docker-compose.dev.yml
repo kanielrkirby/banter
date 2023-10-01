@@ -7,7 +7,7 @@ services:
     ports:
       - ${BACKEND_PORT}:${BACKEND_PORT}
     environment:
-      - DJANGO_DEBUG=True
+      - DJANGO_DEBUG=False
         #command: tail -f /dev/null
   vue:
     build:
