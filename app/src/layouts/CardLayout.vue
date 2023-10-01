@@ -20,5 +20,5 @@ interface Props {
   error?: string
 }
 
-const { title, error } = toRefs(defineProps<Props>())
+const { title, error } = defineProps<Props>()
 </script>
