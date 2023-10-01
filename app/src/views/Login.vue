@@ -19,7 +19,7 @@ import InputField from '@/components/InputField.vue';
 
 const router = useRouter();
 
-const error = ref<string | null>(null)
+const error = ref<string | undefined>()
 
 const email = ref('');
 const password = ref('');

@@ -46,11 +46,11 @@ const props = defineProps({
         default: undefined,
     },
     maxlength: {
-        type: Number,
+        type: String,
         default: undefined,
     },
     minlength: {
-        type: Number,
+        type: String,
         default: undefined,
     },
     required: {
