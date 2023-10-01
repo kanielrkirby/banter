@@ -1,5 +1,5 @@
 <template>
-  <CardLayout title="Login" :error="error">
+  <CardLayout title="Login" :error="error" :submit="login">
     <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="8" required
       autocomplete="email" />
     <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required                                                                                                                                                              

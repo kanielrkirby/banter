@@ -19,16 +19,44 @@
 
 <script setup lang='ts'>
 import { defineProps } from 'vue'
+    //<InputField v-model="username" label="Username" type="text" name="username" id="username" maxlength="40" minlength="3" required autocomplete="username" />
 
 const props = defineProps({
-  label: { type: String, required: true },
-  type: { type: String, required: false },
-  name: { type: String, required: true },
-  id: { type: String, required: true },
-  modelValue: { type: String, required: true },
-  placeholder: { type: String, required: false },
-  maxlength: { type: Number, required: false },
-  minlength: { type: Number, required: false },
-  required: { type: Boolean, required: false },
+    modelValue: {
+        type: String,
+        required: true,
+    },
+    label: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        default: 'text',
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    id: {
+        type: String,
+        required: true,
+    },
+    placeholder: {
+        type: String,
+        default: undefined,
+    },
+    maxlength: {
+        type: Number,
+        default: undefined,
+    },
+    minlength: {
+        type: Number,
+        default: undefined,
+    },
+    required: {
+        type: Boolean,
+        default: false,
+    },
 })
 </script>
