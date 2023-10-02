@@ -201,7 +201,10 @@ class ProfileRoomsView(generics.ListAPIView):
         """
         profile = self.request.user
         room_ids = RoomProfile.objects.filter(profile=profile).values_list('room_id', flat=True)
-        return Room.objects.filter(id__in=room_ids)
+        rooms = Room.objects.filter(id__in=room_ids)
+        for room in rooms:
+            room.last_message = room.messages.order_by('-created_at').first()
+        return rooms
 
     def post(self, request):
         """

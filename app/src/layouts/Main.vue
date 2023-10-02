@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div class="h-full relative flex flex-col">
     <Header />
-    <List />
-    <slot></slot>
-    <Footer />
+    <div class="w-full h-full flex">
+      <List />
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Header from "@/components/Header.vue";
-import Footer from "@/components/Footer.vue";
 import List from "@/components/List.vue";
 </script>

@@ -1,13 +1,19 @@
 <template>
-  <nav>
+  <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between">
     <ul>
-      <li v-for="item in rooms" :key="item">
-        <router-link :to="`/rooms/${item.id}`">
-          {{ item.name }}
+      <li v-for="item in rooms" :key="item" class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+        <router-link :to="`/rooms/${item.id}`" class="p-4 block">
+          <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
+            {{ item.name }}
+          </h4>
+          <p class="text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
+            {{ item.last_message ?? "No messages yet" }}
+          </p>
         </router-link>
       </li>
       <li v-for="item in friends" :key="item" class="">
-        <button @click="(e) => newRoom(e, item.id)">
+        <User :user="item.id" />
+        <button @click="(e) => newRoom(e, item.id)" class="">
           {{ item.username }}
         </button>
       </li>
