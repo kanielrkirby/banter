@@ -21,6 +21,7 @@
         id="email"
         placeholder="Email"
         required
+      />
       <button>
         Add a friend
       </button>
