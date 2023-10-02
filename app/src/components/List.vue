@@ -2,17 +2,17 @@
   <nav>
     <ul>
       <li v-for="item in rooms" :key="item">
-        <router-link :to="/rooms/+item.id">
+        <router-link :to="`/rooms/${item.id}`">
           {{ item.name }}
         </router-link>
       </li>
       <li v-for="item in friends" :key="item" class="hover:after:opacity-100 after:opacity-0 after:transition-all after:duration-200 relative after:absolute after:content-['Message?'] after:inset-0 after:m-auto after:bg-black after:bg-opacity-50 after:blur-md">
-        <button onsubmit="(e) => newRoom(e, item.id)">
+        <button @submit="(e) => newRoom(e, item.id)">
           {{ item.name }}
         </button>
       </li>
     </ul>
-    <form onsubmit="addFriend">
+    <form @submit="addFriend">
       <InputField
         v-model="email"
         label="Email"
@@ -22,7 +22,7 @@
         placeholder="Email"
         required
       />
-      <button>
+      <button class="btn-secondary-accent" type="submit">
         Add a friend
       </button>
     </form>
@@ -54,12 +54,12 @@ const email = ref('')
 
 const addFriend = async (e) => {
   e.preventDefault()
-const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
-  id: email.value,
-  status: 2,
-}, {
-  withCredentials: true,
-})
+  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
+    id: email.value,
+    status: 2,
+  }, {
+    withCredentials: true,
+  })
   const data = await response.json()
 }
 
