@@ -7,7 +7,7 @@
         </router-link>
       </li>
       <li v-for="item in friends" :key="item" class="hover:after:opacity-100 after:opacity-0 after:transition-all after:duration-200 relative after:absolute after:content-['Message?'] after:inset-0 after:m-auto after:bg-black after:bg-opacity-50 after:blur-md">
-        <button onsubmit="() => newRoom(item.id)">
+        <button onsubmit="(e) => newRoom(e, item.id)">
           {{ item.name }}
         </button>
       </li>
@@ -35,7 +35,8 @@ import { user } from '@/stores/user'
 import InputField from '@/components/InputField.vue'
 import axios from 'axios'
 
-const newRoom = async (id: number) => {
+const newRoom = async (e, id: number) => {
+  e.preventDefault()
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/friend-room/`, {
     id: id,
   }, {
