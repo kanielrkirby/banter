@@ -129,8 +129,21 @@ class ProfileRelationsView(generics.ListAPIView):
         profile_relation, created = ProfileRelation.objects.update_or_create(
             requester_profile=requester_profile,
             receiver_profile=receiver_profile,
-            defaults={'status_id': 1}
+            defaults={'status_id': ProfileRelationStatusEnum.requested.value}
         )
+
+        reverse_profile_relation, created = ProfileRelation.objects.update_or_create(
+            requester_profile=receiver_profile,
+            receiver_profile=requester_profile,
+            defaults={'status_id': ProfileRelationStatusEnum.received.value}
+        )
+
+        if reverse_profile_relation.status == ProfileRelationStatusEnum.friend.value or reverse_profile_relation.status == ProfileRelationStatusEnum.requested.value:
+            profile_relation.status = ProfileRelationStatusEnum.friend.value
+            profile_relation.save()
+            reverse_profile_relation.status = ProfileRelationStatusEnum.friend.value
+            reverse_profile_relation.save()
+
         serializer = ProfileRelationSerializer(profile_relation)
         return Response(serializer.data)
 
