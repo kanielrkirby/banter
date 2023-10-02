@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SelfProfileView, ProfileView, ProfileRelationView, ProfileRelationsView, ProfileRoomView, ProfileRoomsView, ProfileFriendRoomView
+from .views import SelfProfileView, ProfileView, ProfileRelationView, ProfileRelationsView, ProfileRoomView, ProfileRoomsView, ProfileFriendRoomView, ProfileFriendsView
 from django.http import HttpResponse
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('room/<uuid:room_id>/', ProfileRoomView.as_view(), name='profile-room-detail'),
     path('<uuid:profile_id>/', ProfileView.as_view(), name='profile-detail'),
     path('friend-room/', ProfileFriendRoomView.as_view(), name='profile-friend-room'),
+    path('friends/', ProfileFriendsView.as_view(), name='profile-friends-list')
 ]

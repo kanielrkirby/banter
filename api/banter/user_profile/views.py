@@ -186,20 +186,22 @@ class ProfileRoomView(APIView):
 
 class ProfileRoomsCursorPagination(CursorPagination):
     page_size = 10
-    ordering = 'room_updated_at_proxy'
+    ordering = '-updated_at'
 
 class ProfileRoomsView(generics.ListAPIView):
     """
     View for listing all profile rooms and creating a new profile room.
     """
     pagination_class = ProfileRoomsCursorPagination
-    serializer_class = RoomProfileSerializer
+    serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         """
         Get all profile rooms.
         """
-        return RoomProfile.objects.annotate(room_updated_at_proxy=F('room__updated_at'))
+        profile = self.request.user
+        room_ids = RoomProfile.objects.filter(profile=profile).values_list('room_id', flat=True)
+        return Room.objects.filter(id__in=room_ids)
 
     def post(self, request):
         """
@@ -212,8 +214,7 @@ class ProfileRoomsView(generics.ListAPIView):
             room=room,
             defaults={'status': 1}
         )
-        serializer = RoomProfileSerializer(profile_room)
-        return Response(serializer.data)
+        return Response(status=201)
 
 class ProfileFriendRoomView(APIView):
     """
@@ -232,7 +233,8 @@ class ProfileFriendRoomView(APIView):
             status=ProfileRelationStatusEnum.friend.value
         ).exists():
             return Response(status=403)
-        room = Room.objects.create(name=request.data['name'])
+        names = ','.join(sorted([profile.username, friend_profile.username]))
+        room = Room.objects.create(name=names)
         profile_room, created = RoomProfile.objects.update_or_create(
             profile=profile,
             room=room,
@@ -244,4 +246,27 @@ class ProfileFriendRoomView(APIView):
             defaults={'status': RoomProfileStatusEnum.owner.value}
         )
         serializer = RoomSerializer(room)
+        return Response(serializer.data)
+
+class ProfileFriendsView(APIView):
+    """
+    View for getting all friends of a profile.
+    """
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        """
+        Get all friends of a profile.
+        """
+        profile = request.user
+        profile_relations = ProfileRelation.objects.filter(
+            requester_profile=profile,
+            status=ProfileRelationStatusEnum.friend.value,
+        )
+        friends = []
+        for profile_relation in profile_relations:
+            if profile_relation.requester_profile == profile:
+                friends.append(profile_relation.receiver_profile)
+            else:
+                friends.append(profile_relation.requester_profile)
+        serializer = ProfileSerializer(friends, many=True)
         return Response(serializer.data)

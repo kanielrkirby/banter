@@ -6,9 +6,9 @@
           {{ item.name }}
         </router-link>
       </li>
-      <li v-for="item in friends" :key="item" class="hover:after:opacity-100 after:opacity-0 after:transition-all after:duration-200 relative after:absolute after:content-['Message?'] after:inset-0 after:m-auto after:bg-black after:bg-opacity-50 after:blur-md">
-        <button @submit="(e) => newRoom(e, item.id)">
-          {{ item.name }}
+      <li v-for="item in friends" :key="item" class="">
+        <button @click="(e) => newRoom(e, item.id)">
+          {{ item.username }}
         </button>
       </li>
     </ul>
@@ -60,7 +60,6 @@ const addFriend = async (e) => {
   }, {
     withCredentials: true,
   })
-  const data = await response.json()
 }
 
 interface Room {
@@ -77,19 +76,19 @@ const rooms = ref<Room[]>([])
 const friends = ref<Friend[]>([])
 
 const fetchRooms = async () => {
-  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms`, {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms/`, {
     withCredentials: true,
   })
-  const data = await response.json()
-  rooms.value = data
+  rooms.value = response.data.results
+  console.log("rooms: ", response.data.results)
 }
 
 const fetchFriends = async () => {
-  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/?status=friend`, {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/friends/`, {
     withCredentials: true,
   })
-  const data = await response.json()
-  friends.value = data
+  friends.value = response.data
+  console.log("friends: ", response.data)
 }
 
 fetchRooms()
