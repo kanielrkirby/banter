@@ -125,17 +125,17 @@ class ProfileRelationsView(generics.ListAPIView):
         Create a profile relation.
         """
         requester_profile = request.user
-        receiver_profile = Profile.objects.get(id=request.data['receiver_profile'])
+        receiver_profile = Profile.objects.get(email=request.data['email'])
         profile_relation, created = ProfileRelation.objects.update_or_create(
             requester_profile=requester_profile,
             receiver_profile=receiver_profile,
-            defaults={'status_id': ProfileRelationStatusEnum.requested.value}
+            defaults={'status': ProfileRelationStatusEnum.requested.value}
         )
 
         reverse_profile_relation, created = ProfileRelation.objects.update_or_create(
             requester_profile=receiver_profile,
             receiver_profile=requester_profile,
-            defaults={'status_id': ProfileRelationStatusEnum.received.value}
+            defaults={'status': ProfileRelationStatusEnum.received.value}
         )
 
         if reverse_profile_relation.status == ProfileRelationStatusEnum.friend.value or reverse_profile_relation.status == ProfileRelationStatusEnum.requested.value:
@@ -210,7 +210,7 @@ class ProfileRoomsView(generics.ListAPIView):
         profile_room, created = RoomProfile.objects.update_or_create(
             profile=profile,
             room=room,
-            defaults={'status_id': 1}
+            defaults={'status': 1}
         )
         serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)

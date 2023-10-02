@@ -38,7 +38,7 @@ import axios from 'axios'
 const newRoom = async (e, id: number) => {
   e.preventDefault()
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/friend-room/`, {
-    id: id,
+    id
   }, {
     withCredentials: true,
   })
@@ -55,7 +55,7 @@ const email = ref('')
 const addFriend = async (e) => {
   e.preventDefault()
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
-    id: email.value,
+    email: email.value,
     status: 2,
   }, {
     withCredentials: true,
