@@ -13,8 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, toRefs } from 'vue'
-
 interface Props {
   title: string
   error?: string

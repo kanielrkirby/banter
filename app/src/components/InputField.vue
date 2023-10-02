@@ -18,9 +18,7 @@
 </template>
 
 <script setup lang='ts'>
-import { defineProps } from 'vue'
-
-const props = defineProps({
+defineProps({
     modelValue: {
         type: String,
         required: true,
