@@ -7,7 +7,7 @@
         </router-link>
       </li>
       <li v-for="item in friends" :key="item" class="hover:after:opacity-100 after:opacity-0 after:transition-all after:duration-200 relative after:absolute after:content-['Message?'] after:inset-0 after:m-auto after:bg-black after:bg-opacity-50 after:blur-md">
-        <button onsubmit="() => submit(item.id)">
+        <button onsubmit="() => newRoom(item.id)">
           {{ item.name }}
         </button>
       </li>
@@ -32,35 +32,32 @@
 import { ref } from 'vue'
 import { user } from '@/stores/user'
 import InputField from '@/components/InputField.vue'
+import axios from 'axios'
 
-const submit = async (id: number) => {
-// Create a new room with user
-//  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms/`, {
-//    method: 'POST',
-//    headers: {
-//      'Content-Type': 'application/json',
-//    },
-//    body: JSON.stringify({
-//      id,
-//    }),
-//  })
+const newRoom = async (id: number) => {
+  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/friend-room/`, {
+    id: id,
+  }, {
+    withCredentials: true,
+  })
+  const data = await response.json()
+  if (response.status >= 200 && response.status < 300) {
+    router.push(`/rooms/${data.id}`)
+  } else {
+    console.log(data)
+  }
 }
 
 const email = ref('')
 
 const addFriend = async (e) => {
-  // Add a friend
   e.preventDefault()
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id: email.value,
-      status: 2,
-    }),
-  })
+const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
+  id: email.value,
+  status: 2,
+}, {
+  withCredentials: true,
+})
   const data = await response.json()
 }
 

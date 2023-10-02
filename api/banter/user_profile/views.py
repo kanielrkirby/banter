@@ -214,3 +214,34 @@ class ProfileRoomsView(generics.ListAPIView):
         )
         serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
+
+class ProfileFriendRoomView(APIView):
+    """
+    View for adding a room with 2 owners (friends).
+    """
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        """
+        Create a room with 2 owners (friends).
+        """
+        profile = request.user
+        friend_profile = Profile.objects.get(id=request.data['id'])
+        if not ProfileRelation.objects.filter(
+            Q(requester_profile=profile, receiver_profile=friend_profile) |
+            Q(requester_profile=friend_profile, receiver_profile=profile),
+            status=ProfileRelationStatusEnum.friend.value
+        ).exists():
+            return Response(status=403)
+        room = Room.objects.create(name=request.data['name'])
+        profile_room, created = RoomProfile.objects.update_or_create(
+            profile=profile,
+            room=room,
+            defaults={'status': RoomProfileStatusEnum.owner.value}
+        )
+        friend_profile_room, created = RoomProfile.objects.update_or_create(
+            profile=friend_profile,
+            room=room,
+            defaults={'status': RoomProfileStatusEnum.owner.value}
+        )
+        serializer = RoomSerializer(room)
+        return Response(serializer.data)
