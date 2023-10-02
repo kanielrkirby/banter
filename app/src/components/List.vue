@@ -77,13 +77,17 @@ const rooms = ref<Room[]>([])
 const friends = ref<Friend[]>([])
 
 const fetchRooms = async () => {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms`)
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/rooms`, {
+    withCredentials: true,
+  })
   const data = await response.json()
   rooms.value = data
 }
 
 const fetchFriends = async () => {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/?status=friend`)
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/?status=friend`, {
+    withCredentials: true,
+  })
   const data = await response.json()
   friends.value = data
 }
