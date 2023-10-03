@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from .enums import RoomProfileStatusEnum
 import uuid
+from django.utils import timezone
 
 class Room(models.Model):
     """

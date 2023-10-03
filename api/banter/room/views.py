@@ -201,6 +201,8 @@ class MessagesView(ListAPIView):
         messages = Message.objects.filter(room=room)
         messages = self.paginate_queryset(messages)
         serializer = MessageSerializer(messages, many=True)
+        for message in serializer.data:
+            message['profile'] = ProfileSerializer(Profile.objects.get(id=message['profile'])).data
         return Response(serializer.data)
 
     def post(self, request, room_id):
