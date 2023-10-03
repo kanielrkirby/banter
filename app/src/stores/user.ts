@@ -61,6 +61,7 @@ async function checkAuth() {
       throw new Error('User is not authenticated');
     }
   } catch (err) {
+    console.log(err);
     refresh()
   }
 }

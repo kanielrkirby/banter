@@ -105,7 +105,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'banter.wsgi.application'
-ASGI_APPLICATION = 'banter.routing.application'
+ASGI_APPLICATION = 'banter.asgi.application'
 
 
 # Database
@@ -137,13 +137,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": 
-            [{
-                "address": os.getenv('REDIS_HOST'),
-                "port": os.getenv('REDIS_PORT'),
-                "db": 0,
-                "password": os.getenv('REDIS_PASSWORD'),
-            }],
+            "hosts": [f"{os.getenv('REDIS_HOST')}://:{os.getenv("REDIS_PASSWORD")}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}"],
         },
     },
 }

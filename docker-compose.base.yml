@@ -4,10 +4,10 @@ services:
     container_name: banter-redis
     image: redis:7.2.1-alpine
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_DB=${REDIS_DB}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
   mysql:
     container_name: banter-mysql
     image: mysql:8.1.0
@@ -32,9 +32,9 @@ services:
     volumes:
       - ./api:/api
     environment:
-      - BACKEND_HOST=${BACKEND_HOST}
+      - BACKEND_HOST=http://${BACKEND_BASE}
       - BACKEND_PORT=${BACKEND_PORT}
-      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_HOST=http://${FRONTEND_BASE}
       - FRONTEND_PORT=${FRONTEND_PORT}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
@@ -43,6 +43,7 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
     depends_on:
       mysql:
         condition: service_healthy

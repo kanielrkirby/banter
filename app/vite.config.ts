@@ -28,7 +28,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     hmr: {
-      host: `${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`,
+      host: `${process.env.FRONTEND_BASE}`,
     },
     port: parseInt(process.env.FRONTEND_PORT ?? '3000'),
     watch: {

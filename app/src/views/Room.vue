@@ -62,4 +62,14 @@ async function postMessage() {
     console.log(res)
   }
 }
+
+async function handleSocket() {
+  const socket = new WebSocket(`${import.meta.env.VITE_BACKEND_WS_URL}/ws/room/${id}/`)
+  socket.onmessage = (e) => {
+    const data = JSON.parse(e.data)
+    messages.value.push(data)
+  }
+}
+
+handleSocket()
 </script>
