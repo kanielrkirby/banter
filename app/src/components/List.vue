@@ -1,8 +1,8 @@
 <template>
-  <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between">
+  <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between items-center">
     <ul>
       <li v-for="item in rooms" :key="item" class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
-        <router-link :to="`/rooms/${item.id}`" class="p-4 block">
+        <router-link :to="`/room/${item.id}`" class="p-4 block">
           <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
             {{ item.name }}
           </h4>
@@ -18,7 +18,7 @@
         </button>
       </li>
     </ul>
-    <form @submit="addFriend">
+    <form @submit="addFriend" class="flex flex-col gap-2 w-full items-center p-2">
       <InputField
         v-model="email"
         label="Email"
@@ -28,7 +28,7 @@
         placeholder="Email"
         required
       />
-      <button class="btn-secondary-accent" type="submit">
+      <button class="btn-secondary-accent w-fit" type="submit">
         Add a friend
       </button>
     </form>
@@ -40,6 +40,7 @@ import { ref } from 'vue'
 import { user } from '@/stores/user'
 import InputField from '@/components/InputField.vue'
 import axios from 'axios'
+import User from '@/components/User.vue'
 
 const newRoom = async (e, id: number) => {
   e.preventDefault()

@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from .enums import RoomProfileStatusEnum
+import uuid
 
 class Room(models.Model):
     """
@@ -10,6 +11,7 @@ class Room(models.Model):
         created_at: the date and time the room was created
         updated_at: the date and time the room was last updated
     """
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,7 +34,7 @@ class Message(models.Model):
         created_at: the date and time the message was created
         updated_at: the date and time the message was last updated
     """
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     profile = models.ForeignKey('user_profile.Profile', on_delete=models.CASCADE, related_name='messages')
     room = models.ForeignKey('room.Room', on_delete=models.CASCADE, related_name='messages')
     body = models.TextField(max_length=1000)

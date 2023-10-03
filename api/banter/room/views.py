@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from .models import Room, Message, RoomProfile
 from user_profile.models import Profile
 from user_profile.serializers import ProfileSerializer
@@ -182,7 +183,7 @@ class MessagesCursorPagination(CursorPagination):
     page_size = 30
     ordering = '-created_at'
 
-class MessagesView(APIView):
+class MessagesView(ListAPIView):
     """
     View for listing all messages in a room and creating a new message.
     """
@@ -195,10 +196,10 @@ class MessagesView(APIView):
         room = Room.objects.get(id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member, RoomProfileStatusEnum.muted]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value, RoomProfileStatusEnum.member.value, RoomProfileStatusEnum.muted.value]):
             return Response(status=403)
         messages = Message.objects.filter(room=room)
-        messages = self.paginate_queryset(messages, self.request, view=self)
+        messages = self.paginate_queryset(messages)
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 
