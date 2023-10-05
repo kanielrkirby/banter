@@ -1,7 +1,7 @@
 <template>
   <div class="h-full relative flex flex-col overflow-hidden">
     <Header />
-    <div class="w-full h-full flex">
+    <div class="w-full h-full flex gap-2">
       <List />
       <slot></slot>
     </div>
