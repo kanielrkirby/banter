@@ -1,7 +1,8 @@
 <template>
   <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between items-center">
-    <ul>
-      <li v-for="item in rooms" :key="item" class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+    <ul class="w-full flex flex-col gap-1">
+      <li v-for="item in rooms" :key="item.id"
+        class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
         <router-link :to="`/room/${item.id}`" class="p-4 block">
           <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
             {{ item.name }}
@@ -11,23 +12,18 @@
           </p>
         </router-link>
       </li>
-      <li v-for="item in friends" :key="item" class="">
-        <User :user="item.id" />
-        <button @click="(e) => newRoom(e, item.id)" class="">
-          {{ item.username }}
+      <li v-for="item in friends" :key="item.id"
+        class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+        <button @click="(e) => newRoom(e, item.id)" class="p-4 block flex gap-2">
+          <User :user="item.id" />
+          <span>
+            {{ item.username }}
+          </span>
         </button>
       </li>
     </ul>
     <form @submit="addFriend" class="flex flex-col gap-2 w-full items-center p-2">
-      <InputField
-        v-model="email"
-        label="Email"
-        type="text"
-        name="email"
-        id="email"
-        placeholder="Email"
-        required
-      />
+      <InputField v-model="email" label="Email" type="text" name="email" id="email" placeholder="Email" required />
       <button class="btn-secondary-accent w-fit" type="submit">
         Add a friend
       </button>
@@ -37,29 +33,30 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { user } from '@/stores/user'
 import InputField from '@/components/InputField.vue'
 import axios from 'axios'
 import User from '@/components/User.vue'
+import { useRouter } from 'vue-router'
 
-const newRoom = async (e, id: number) => {
+const router = useRouter()
+
+const newRoom = async (e: Event, id: number) => {
   e.preventDefault()
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/friend-room/`, {
     id
   }, {
     withCredentials: true,
   })
-  const data = await response.json()
+  
   if (response.status >= 200 && response.status < 300) {
-    router.push(`/rooms/${data.id}`)
+    router.push(`/rooms/${response.data.id}`)
   } else {
-    console.log(data)
   }
 }
 
 const email = ref('')
 
-const addFriend = async (e) => {
+const addFriend = async (e: Event) => {
   e.preventDefault()
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/`, {
     email: email.value,
@@ -72,10 +69,11 @@ const addFriend = async (e) => {
 interface Room {
   name: string
   id: number
+  last_message: string
 }
 
 interface Friend {
-  name: string
+  username: string
   id: number
 }
 

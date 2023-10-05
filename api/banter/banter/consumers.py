@@ -7,6 +7,7 @@ from django.apps import apps
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("Trying to connect")
         self.room_uuid = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f'chat_{self.room_uuid}'
 
@@ -17,8 +18,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         if self.scope.get('user'):
+            print("Connected")
             await self.accept()
         else:
+            print("Rejected")
             await self.close()
 
     async def disconnect(self, close_code):
@@ -29,6 +32,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        print(f"Received message: {text_data}")
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
@@ -46,18 +50,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
     async def chat_message(self, event):
+        # Send the message to the WebSocket
         message = event['message']
-
-        # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message
         }))
-
-    @database_sync_to_async
-    def save_message(self, message):
-        Room = apps.get_model('room', 'Room')
-        Message = apps.get_model('room', 'Message')
-        # You might have a foreign key to the room model in your Message model
-        room = Room.objects.get(uuid=self.room_uuid)
-        Message.objects.create(content=message, user=self.scope["user"], room=room)
 

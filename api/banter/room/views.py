@@ -12,6 +12,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Q
 from django.core.paginator import Paginator
 from rest_framework.pagination import CursorPagination
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 
 class RoomView(APIView):
     """
@@ -211,8 +214,20 @@ class MessagesView(ListAPIView):
         """
         message = Message.objects.create(
             profile=request.user,
-            room=Room.objects.get(id=room_id),
+            room_id=room_id,  # Directly use the room_id here
             body=request.data['body']
         )
+
         serializer = MessageSerializer(message)
+        channel_layer = get_channel_layer()
+        room_group_name = f'chat_{room_id}'
+        async_to_sync(channel_layer.group_send)(
+            room_group_name,
+            {
+                'type': 'chat.message',
+                'message': serializer.data  # Ensure this matches the format expected by your WebSocket consumer
+            }
+        )
+
         return Response(serializer.data)
+
