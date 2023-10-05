@@ -1,26 +1,28 @@
 <template>
   <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between items-center">
     <ul class="w-full flex flex-col gap-1">
-      <li v-for="item in rooms" :key="item.id"
-        class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
-        <router-link :to="`/room/${item.id}`" class="p-4 block">
-          <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
-            {{ item.name }}
-          </h4>
-          <p class="text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
-            {{ item.last_message ?? "No messages yet" }}
-          </p>
-        </router-link>
-      </li>
-      <li v-for="item in friends" :key="item.id"
-        class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
-        <button @click="(e) => newRoom(e, item.id)" class="p-4 block flex gap-2">
-          <User :user="item.id" />
-          <span>
-            {{ item.username }}
-          </span>
-        </button>
-      </li>
+      <template v-for="item in rooms" :key="item.id">
+        <li class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+          <router-link :to="`/room/${item.id}`" class="p-4 block">
+            <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
+              {{ item.name }}
+            </h4>
+            <p class="text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
+              {{ item.last_message ?? "No messages yet" }}
+            </p>
+          </router-link>
+        </li>
+      </template>
+      <template v-for="item in friends" :key="item.id">
+        <li class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+          <button @click="(e) => newRoom(e, item.id)" class="p-4 flex gap-2">
+            <User :user="item.id" />
+            <span>
+              {{ item.username }}
+            </span>
+          </button>
+        </li>
+      </template>
     </ul>
     <form @submit="addFriend" class="flex flex-col gap-2 w-full items-center p-2">
       <InputField v-model="email" label="Email" type="text" name="email" id="email" placeholder="Email" required />
@@ -47,7 +49,7 @@ const newRoom = async (e: Event, id: number) => {
   }, {
     withCredentials: true,
   })
-  
+
   if (response.status >= 200 && response.status < 300) {
     router.push(`/rooms/${response.data.id}`)
   } else {
