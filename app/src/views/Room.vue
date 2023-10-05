@@ -1,14 +1,17 @@
 <template>
   <Main>
-    <main>
+    <main class="w-full p-2">
+      <header class="">
+        <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
+      </header>
       <ul class="flex-col flex gap-2">
         <li :class="`flex gap-2 items-center ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`"
           v-for="message in messages" :key="message.id">
-          <User :user="message.profile.id" class="w-4" />
+          <User :user="message.profile.id" className="w-12 flex-shrink-0" />
           <div
             :class="`flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
             <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
-            <p :class="`rounded-full px-4 py-1 ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
+            <p :class="`rounded-2xl px-4 py-2 max-w-[60%] items-center ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
               {{ message.body }}
             </p>
             <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
@@ -43,6 +46,8 @@ interface Message {
   }
 }
 
+const room = ref('')
+
 const route = useRoute()
 const id = route.params.id
 
@@ -54,7 +59,8 @@ async function getMessages() {
     withCredentials: true,
   })
   if (res.status >= 200 && res.status < 300) {
-    messages.value = res.data
+    const reversedData = res.data.reverse()
+    messages.value = reversedData
     console.log(res.data)
   } else {
     console.log(res)
@@ -130,4 +136,11 @@ async function handleSocket() {
 }
 
 handleSocket()
+
+defineProps({
+  room: {
+    type: String,
+    default: 'Room',
+  },
+})
 </script>
