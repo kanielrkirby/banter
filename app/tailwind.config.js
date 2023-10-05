@@ -9,8 +9,11 @@ module.exports = {
         'heading-secondary': ['Inknut Antiqua', 'serif'],
       },
       colors: {
-        primary: '#12141A',
-        secondary: '#1E2435',
+        primary: '#1E2435',
+        'primary-light': '#234267',
+        'primary-dark': '#12141A',
+        secondary: '#234B54',
+        'secondary-dark': '#0C2E36',
         accent: '#F2DC83',
         'accent-dark': '#CF9549',
         'secondary-accent': '#845CEE',

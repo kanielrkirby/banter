@@ -1,8 +1,8 @@
 <template>
   <!-- Image with fallback SVG -->
-  <router-link to="/profile" class="hover:scale-105 transition-all duration-150">
-    <img class="w-16 h-16 overflow-hidden rounded-md" v-if="user.avatar" :src="user.avatar" :alt="user.name" />
-    <div class="w-16 h-16 overflow-hidden rounded-md">
+  <router-link to="/profile" :class="`hover:scale-105 transition-all duration-150 ${className ?? 'w-16'}`">
+    <img class="w-full aspect-square overflow-hidden rounded-md" v-if="user.avatar" :src="user.avatar" :alt="user.name" />
+    <div class="w-full aspect-square overflow-hidden rounded-md" v-else>
       <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
         <rect width="500" height="500" :fill="bg" />
         <circle cx="250" cy="158" r="104" :fill="color" />
@@ -18,10 +18,14 @@
 import { computed } from 'vue'
 import { user } from '@/stores/user'
 
-const { color } = defineProps({
+const { color, class: className } = defineProps({
   color: {
     type: String,
     default: '#444444',
+  },
+  class: {
+    type: String,
+    default: '',
   },
 })
 

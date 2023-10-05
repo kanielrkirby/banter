@@ -1,14 +1,14 @@
 <template>
   <main>
-    <ul>
-      <li class="flex gap-2" v-for="message in messages" :key="message.id">
-        <User :user="message.profile.id" />
-        <div class="flex flex-col justify-between">
-          <span class="text-opacity-50">{{ message.profile.username }}</span>
-          <p :class="`rounded-full ${message.profile.id === user.id ? 'bg-sky-500' : 'bg-green-500'}`">
+    <ul class="flex-col flex gap-2">
+      <li :class="`flex gap-2 items-center ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`" v-for="message in messages" :key="message.id">
+        <User :user="message.profile.id" class="w-4"/>
+        <div :class="`flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
+          <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
+          <p :class="`rounded-full px-4 py-1 ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
             {{ message.body }}
           </p>
-          <span class="text-opacity-50">{{ message.time_since }}</span>
+          <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
         </div>
       </li>
     </ul>
