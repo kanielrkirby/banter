@@ -2,13 +2,13 @@
   <main>
     <ul>
       <li v-for="message in messages" :key="message.id">
-        <img :src="message.profile.avatar" class="w-8 h-8 rounded-full" />
+        <User />
         <p class="font-bold">{{ message.profile.username }}</p>
         <p>{{ message.body }}</p>
       </li>
     </ul>
     <div>
-      <InputField v-model="body" type="text" />
+      <InputField v-model="body" type="text" name="body" placeholder="Send a message" />
       <button @click="postMessage">Send</button>
     </div>
   </main>
@@ -19,6 +19,8 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import InputField from '@/components/InputField.vue'
+import User from '@/components/User.vue'
+import { user } from '@/stores/user'
 
 interface Message {
   id: number
@@ -26,7 +28,6 @@ interface Message {
   profile: {
     id: number
     username: string
-    avatar: string
   }
 }
 
@@ -57,7 +58,7 @@ async function postMessage() {
     withCredentials: true,
   })
   if (res.status >= 200 && res.status < 300) {
-    messages.value.push(res.data)
+    body.value = ''
   } else {
     console.log(res)
   }
@@ -67,7 +68,7 @@ async function handleSocket() {
   const socket = new WebSocket(`${import.meta.env.VITE_BACKEND_WS_URL}/ws/room/${id}/`)
   socket.onmessage = (e) => {
     const data = JSON.parse(e.data)
-    messages.value.push(data)
+    messages.value.push(data.message)
   }
 }
 
