@@ -219,13 +219,17 @@ class MessagesView(ListAPIView):
         )
 
         serializer = MessageSerializer(message)
+        channel_data = serializer.data
+        print(channel_data)
+        channel_data['profile'] = ProfileSerializer(Profile.objects.get(id=channel_data['profile'])).data
+        channel_data['room'] = RoomSerializer(Room.objects.get(id=channel_data['room'])).data
         channel_layer = get_channel_layer()
         room_group_name = f'chat_{room_id}'
         async_to_sync(channel_layer.group_send)(
             room_group_name,
             {
                 'type': 'chat.message',
-                'message': serializer.data  # Ensure this matches the format expected by your WebSocket consumer
+                'message': channel_data
             }
         )
 
