@@ -62,6 +62,9 @@ module.exports = {
         '.btn-secondary-accent': {
           "@apply px-4 py-3 bg-gradient-to-br from-accent to-accent-dark after:absolute relative after:bg-gradient-to-tr after:from-accent-dark after:to-accent hover:after:opacity-100 after:opacity-0 after:content-[''] after:w-full after:h-full after:transition-all after:duration-300 after:left-0 after:top-0 border-slate-900 border-4 rounded-sm text-black text-opacity-80 hover:scale-105 transition-all duration-150 hover:text-opacity-95 font-heading-secondary font-black after:-z-10": ''
         },
+        '.btn-accent': {
+          "@apply text-sm px-2 py-1 bg-gradient-to-br from-secondary-accent to-secondary-accent-dark after:absolute relative after:bg-gradient-to-tr after:from-secondary-accent-dark after:to-secondary-accent hover:after:opacity-100 after:rounded-md after:opacity-0 after:content-[''] after:w-full after:h-full after:transition-all after:duration-300 after:left-0 after:top-0 rounded-md text-black text-opacity-80 hover:scale-105 transition-all duration-150 hover:text-opacity-95 font-heading-secondary font-black after:-z-10": ''
+        },
         '.link-primary-accent': {
           "@apply text-secondary-accent self-start text-sm hover:underline hover:brightness-125 transition-all duration-100": ''
         }

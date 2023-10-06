@@ -1,6 +1,6 @@
 <template>
   <Main>
-    <main class="w-0 grow p-2 flex flex-col h-full gap-2">
+    <main class="w-0 grow p-2 flex flex-col h-full">
       <header class="">
         <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
       </header>
@@ -18,9 +18,9 @@
           </div>
         </li>
       </ul>
-      <form @submit.prevent="postMessage" class="space-y-2">
+      <form @submit.prevent="postMessage" class="items-center gap-4 bg-primary p-4 rounded-lg flex">
         <InputField v-model="body" type="text" name="body" placeholder="Send a message" />
-        <button type="submit" class="btn-secondary-accent">Send</button>
+        <button type="submit" class="btn-accent">Send</button>
       </form>
     </main>
   </Main>
