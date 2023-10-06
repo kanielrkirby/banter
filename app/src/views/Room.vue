@@ -5,17 +5,26 @@
         <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
       </header>
       <ul class="flex-col flex gap-2 overflow-y-scroll grow h-0">
-        <li :class="`flex gap-2 items-center ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`"
+        <li :class="`flex gap-2 items-center group ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`"
           v-for="message in messages" :key="message.id">
           <User :user="message.profile.id" className="w-12 flex-shrink-0" />
-          <div
-            :class="`w-[75%] flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
-            <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
-            <p
-              :class="`rounded-2xl px-4 py-2 items-center ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
-              {{ message.body }}
-            </p>
-            <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
+          <div :class="`w-[70%] flex ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`">
+            <div
+              :class="`flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
+              <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
+              <p
+                :class="`rounded-2xl px-4 py-2 items-center ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
+                {{ message.body }}
+              </p>
+              <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
+            </div>
+            <button on-click="" class="w-fit h-fit">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 opacity-50 hover:opacity-100 transition-all duration-150">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
           </div>
         </li>
       </ul>

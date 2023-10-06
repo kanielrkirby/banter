@@ -23,7 +23,7 @@ module.exports = {
     },
   },
   plugins: [
-    function ({ addComponents, addBase, addUtilities }) {
+    function ({ addComponents, addBase, addUtilities, matchComponents }) {
       addBase({
         'h1,h2,h3,h4,h5,h6': {
           fontFamily: 'Rye, serif',
@@ -56,7 +56,7 @@ module.exports = {
         },
         h6: {
           fontSize: '1rem',
-        }
+        },
       })
       addComponents({
         '.btn-secondary-accent': {
@@ -67,7 +67,12 @@ module.exports = {
         },
         '.link-primary-accent': {
           "@apply text-secondary-accent self-start text-sm hover:underline hover:brightness-125 transition-all duration-100": ''
-        }
+        },
+        '.shadow-gradient': {
+          ':after': {
+            "@apply absolute inset-0 rounded-md bg-[--tw-gradient-from] bg-gradient-to-br from-[--tw-gradient-from] to-[--tw-gradient-to] filter blur-3xl opacity-50 z-[-1] transition-all duration-300": ''
+          }
+        },
       })
     }
   ],
