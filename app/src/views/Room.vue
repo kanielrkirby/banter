@@ -1,6 +1,6 @@
 <template>
   <Main>
-    <main class="w-full p-2 flex flex-col h-full">
+    <main class="w-0 grow p-2 flex flex-col h-full gap-2">
       <header class="">
         <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
       </header>

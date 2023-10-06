@@ -1,25 +1,34 @@
 <template>
   <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between items-center">
-    <ul class="w-full flex flex-col gap-1 overflow-y-scroll h-0 grow">
+    <ul class="w-full flex flex-col gap-1 overflow-y-scroll h-0 grow overflow-x-hidden">
       <template v-for="item in rooms" :key="item.id">
-        <li class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
-          <router-link :to="`/room/${item.id}`" class="p-4 block">
-            <h4 class="font-body text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150">
+        <li
+          class="rounded-md bg-primary-faded group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+          <router-link :to="`/room/${item.id}`" class="p-4 block space-y-2">
+            <h4
+              class="font-heading-secondary text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150 text-base">
               {{ item.name }}
             </h4>
-            <p class="text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
+            <p class="text-sm text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150 max-w-[40ch] text-ellipsis">
               {{ item.last_message ?? "No messages yet" }}
             </p>
           </router-link>
         </li>
       </template>
       <template v-for="item in friends" :key="item.id">
-        <li class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+        <li
+          class="rounded-md bg-primary-faded group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
           <button @click="(e) => newRoom(e, item.id)" class="p-4 flex gap-2">
             <User :user="item.id" />
-            <span>
-              {{ item.username }}
-            </span>
+            <div class="flex flex-col gap-2">
+              <h4
+                class="w-fit font-heading-secondary text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150 text-base">
+                {{ item.username }}
+              </h4>
+              <p class="text-sm text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
+                Click to start a chat
+              </p>
+            </div>
           </button>
         </li>
       </template>
