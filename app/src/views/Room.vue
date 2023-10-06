@@ -9,9 +9,10 @@
           v-for="message in messages" :key="message.id">
           <User :user="message.profile.id" className="w-12 flex-shrink-0" />
           <div
-            :class="`flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
+            :class="`w-[75%] flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
             <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
-            <p :class="`rounded-2xl px-4 py-2 max-w-[60%] items-center ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
+            <p
+              :class="`rounded-2xl px-4 py-2 items-center ${message.profile.id === user.id ? 'bg-primary-light' : 'bg-secondary'}`">
               {{ message.body }}
             </p>
             <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
@@ -46,7 +47,12 @@ interface Message {
   }
 }
 
-const room = ref('')
+interface Room {
+  id: number
+  name: string
+}
+
+const room = ref<Room>()
 
 const route = useRoute()
 const id = route.params.id
@@ -68,36 +74,25 @@ async function getMessages() {
   }
 }
 function handleTimeSince() {
+  const pluralize = (word: string, count: number) => {
+    return `${count} ${word}${count === 1 ? '' : 's'} ago`;
+  }
   const updateElapsedTime = (message: Message) => {
-    const currentTime = Date.now();
-    const messageTime = new Date(message.created_at).getTime();
-    const elapsedTime = currentTime - messageTime;
+    const elapsedTime = Date.now() - new Date(message.created_at).getTime();
     const seconds = Math.floor(elapsedTime / 1000);
-    if (seconds < 60) {
-      return `${seconds} seconds ago`;
-    }
+    if (seconds < 60) return pluralize('second', seconds);
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    }
+    if (minutes < 60) return pluralize('minute', minutes);
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) {
-      return `${hours} hours ago`;
-    }
+    if (hours < 24) return pluralize('hour', hours);
     const days = Math.floor(hours / 24);
-    if (days < 7) {
-      return `${days} days ago`;
-    }
+    if (days < 7) return pluralize('day', days);
     const weeks = Math.floor(days / 7);
-    if (weeks < 4) {
-      return `${weeks} weeks ago`;
-    }
+    if (weeks < 4) return pluralize('week', weeks);
     const months = Math.floor(weeks / 4);
-    if (months < 12) {
-      return `${months} months ago`;
-    }
+    if (months < 12) return pluralize('month', months);
     const years = Math.floor(months / 12);
-    return `${years} years ago`;
+    return pluralize('year', years);
   }
 
   const func = () => {
@@ -132,8 +127,9 @@ async function handleSocket() {
   const socket = new WebSocket(`${import.meta.env.VITE_BACKEND_WS_URL}/ws/room/${id}/`)
   socket.onmessage = (e) => {
     const data = JSON.parse(e.data)
+    data.message.time_since = "Just now"
     messages.value.push(data.message)
-    scrollToBottom()
+    setTimeout(scrollToBottom, 100)
   }
 }
 
@@ -147,7 +143,7 @@ defineProps({
 })
 
 function scrollToBottom() {
-  const chat = document.querySelector('main')
+  const chat = document.querySelector('main > ul')
   chat?.scrollTo(0, chat.scrollHeight)
 }
 </script>
