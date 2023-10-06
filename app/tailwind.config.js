@@ -31,6 +31,14 @@ module.exports = {
         '*,*::before,*::after': {
           fontFamily: 'Lato, sans-serif',
         },
+        '*::-webkit-scrollbar,*::-webkit-scrollbar-corner': {
+          backgroundColor: 'transparent',
+          width: '10px',
+        },
+        '*::-webkit-scrollbar-thumb': {
+          borderRadius: '10px',
+          backgroundColor: '#1E2435B0',
+        },
         h1: {
           fontSize: '2.5rem',
         },
