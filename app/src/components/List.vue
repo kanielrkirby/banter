@@ -1,6 +1,6 @@
 <template>
   <nav class="w-1/3 min-w-[15rem] flex-col flex h-full justify-between items-center">
-    <ul class="w-full flex flex-col gap-1">
+    <ul class="w-full flex flex-col gap-1 overflow-y-scroll h-0 grow">
       <template v-for="item in rooms" :key="item.id">
         <li class="rounded-md bg-secondary group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
           <router-link :to="`/room/${item.id}`" class="p-4 block">

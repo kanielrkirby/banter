@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full relative flex flex-col overflow-hidden">
+  <div class="h-full relative flex flex-col">
     <Header />
     <div class="w-full h-full flex gap-2">
       <List />

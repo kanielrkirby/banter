@@ -1,10 +1,10 @@
 <template>
   <Main>
-    <main class="w-full p-2">
+    <main class="w-full p-2 flex flex-col h-full">
       <header class="">
         <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
       </header>
-      <ul class="flex-col flex gap-2">
+      <ul class="flex-col flex gap-2 overflow-y-scroll grow h-0">
         <li :class="`flex gap-2 items-center ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`"
           v-for="message in messages" :key="message.id">
           <User :user="message.profile.id" className="w-12 flex-shrink-0" />
@@ -18,10 +18,10 @@
           </div>
         </li>
       </ul>
-      <div>
+      <form @submit.prevent="postMessage" class="space-y-2">
         <InputField v-model="body" type="text" name="body" placeholder="Send a message" />
-        <button @click="postMessage">Send</button>
-      </div>
+        <button type="submit" class="btn-secondary-accent">Send</button>
+      </form>
     </main>
   </Main>
 </template>
@@ -61,6 +61,7 @@ async function getMessages() {
   if (res.status >= 200 && res.status < 300) {
     const reversedData = res.data.reverse()
     messages.value = reversedData
+    setTimeout(scrollToBottom, 100)
     console.log(res.data)
   } else {
     console.log(res)
@@ -132,6 +133,7 @@ async function handleSocket() {
   socket.onmessage = (e) => {
     const data = JSON.parse(e.data)
     messages.value.push(data.message)
+    scrollToBottom()
   }
 }
 
@@ -143,4 +145,9 @@ defineProps({
     default: 'Room',
   },
 })
+
+function scrollToBottom() {
+  const chat = document.querySelector('main')
+  chat?.scrollTo(0, chat.scrollHeight)
+}
 </script>
