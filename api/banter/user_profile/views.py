@@ -36,7 +36,12 @@ class SelfProfileView(APIView):
         Update the authenticated profile.
         """
         profile = request.user
-        profile.name = request.data['name']
+        if 'username' in request.data:
+            profile.username = request.data['username']
+        if 'email' in request.data:
+            profile.email = request.data['email']
+        if 'password' in request.data:
+            profile.set_password(request.data['password'])
         profile.save()
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
