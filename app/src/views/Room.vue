@@ -4,11 +4,11 @@
       <header class="">
         <h1 class="text-2xl font-bold text-white">{{ room }}</h1>
       </header>
-      <ul class="flex-col flex gap-2 overflow-y-scroll grow h-0">
+      <ul class="flex-col flex gap-2 overflow-y-scroll grow h-0 p-2">
         <li :class="`flex gap-2 items-center group ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`"
           v-for="message in messages" :key="message.id">
-          <User :user="message.profile.id" className="w-12 flex-shrink-0" />
-          <div :class="`w-[70%] flex ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`">
+          <User :id="message.profile.id" className="w-12 flex-shrink-0" />
+          <div :class="`w-[70%] flex items-center ${message.profile.id === user.id ? '' : 'flex-row-reverse'}`">
             <div
               :class="`flex flex-col justify-between gap-1 ${message.profile.id === user.id ? 'items-start' : 'items-end'}`">
               <span class="text-opacity-80 text-white text-sm">{{ message.profile.username }}</span>
@@ -18,7 +18,7 @@
               </p>
               <span class="text-opacity-50 text-white text-xs">{{ message.time_since ?? "..." }}</span>
             </div>
-            <button on-click="" class="w-fit h-fit">
+            <button @click="popup" class="w-fit h-fit">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6 opacity-50 hover:opacity-100 transition-all duration-150">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -61,63 +61,80 @@ interface Room {
   name: string
 }
 
-const room = ref<Room>()
+const popup = () => {
+  alert('Not implemented yet')
+}
+
 
 const route = useRoute()
 const id = route.params.id
 
+const room = ref<Room>()
+
+;(async () => {
+const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/room/${id}/`, {
+  withCredentials: true,
+})
+if (res.status >= 200 && res.status < 300) {
+  room.value = res.data
+}
+})()
+
 const messages = ref<Message[]>([])
 const body = ref('')
 
-async function getMessages() {
-  const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/room/${id}/messages/`, {
-    withCredentials: true,
-  })
-  if (res.status >= 200 && res.status < 300) {
-    const reversedData = res.data.reverse()
-    messages.value = reversedData
-    setTimeout(scrollToBottom, 100)
-    console.log(res.data)
-  } else {
-    console.log(res)
-  }
-}
-function handleTimeSince() {
-  const pluralize = (word: string, count: number) => {
-    return `${count} ${word}${count === 1 ? '' : 's'} ago`;
-  }
-  const updateElapsedTime = (message: Message) => {
-    const elapsedTime = Date.now() - new Date(message.created_at).getTime();
-    const seconds = Math.floor(elapsedTime / 1000);
-    if (seconds < 60) return pluralize('second', seconds);
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return pluralize('minute', minutes);
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return pluralize('hour', hours);
-    const days = Math.floor(hours / 24);
-    if (days < 7) return pluralize('day', days);
-    const weeks = Math.floor(days / 7);
-    if (weeks < 4) return pluralize('week', weeks);
-    const months = Math.floor(weeks / 4);
-    if (months < 12) return pluralize('month', months);
-    const years = Math.floor(months / 12);
-    return pluralize('year', years);
-  }
+  ; (async function getMessages() {
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/room/${id}/messages/`, {
+      withCredentials: true,
+    })
+    if (res.status >= 200 && res.status < 300) {
+      const reversedData = res.data.reverse()
+      messages.value = reversedData
+      setTimeout(scrollToBottom, 100)
+      console.log(res.data)
+    } else {
+      console.log(res)
+    }
+  })()
 
-  const func = () => {
-    const updatedMessages = messages.value.map(message => ({
-      ...message,
-      time_since: updateElapsedTime(message)
-    }));
-    messages.value = updatedMessages;
-  }
+  ; (function handleTimeSince() {
+    const pluralize = (word: string, count: number) => {
+      return `${count} ${word}${count === 1 ? '' : 's'} ago`;
+    }
+    const updateElapsedTime = (message: Message) => {
+      const elapsedTime = Date.now() - new Date(message.created_at).getTime();
+      const seconds = Math.floor(elapsedTime / 1000);
+      if (seconds < 60) return pluralize('second', seconds);
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return pluralize('minute', minutes);
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return pluralize('hour', hours);
+      const days = Math.floor(hours / 24);
+      if (days < 7) return pluralize('day', days);
+      const weeks = Math.floor(days / 7);
+      if (weeks < 4) return pluralize('week', weeks);
+      const months = Math.floor(weeks / 4);
+      if (months < 12) return pluralize('month', months);
+      const years = Math.floor(months / 12);
+      return pluralize('year', years);
+    }
 
-  setTimeout(func, 500);
-  setInterval(func, 10000);
-}
-handleTimeSince()
+    const updateMessages = () => {
+      const _messages = messages.value
+      for (let i = 0; i < _messages.length; i++) {
+        _messages[i].time_since = updateElapsedTime(_messages[i])
+      }
+      messages.value = _messages
+    }
+    let interval = setInterval(updateMessages, 30000)
+    setTimeout(updateMessages, 500)
+    return function () {
+      clearInterval(interval)
+      interval = setInterval(updateMessages, 30000)
+      updateMessages()
+    }
+  })()
 
-getMessages()
 
 async function postMessage() {
   const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/room/${id}/messages/`, {
@@ -132,7 +149,7 @@ async function postMessage() {
   }
 }
 
-async function handleSocket() {
+; (async function handleSocket() {
   const socket = new WebSocket(`${import.meta.env.VITE_BACKEND_WS_URL}/ws/room/${id}/`)
   socket.onmessage = (e) => {
     const data = JSON.parse(e.data)
@@ -140,9 +157,7 @@ async function handleSocket() {
     messages.value.push(data.message)
     setTimeout(scrollToBottom, 100)
   }
-}
-
-handleSocket()
+})()
 
 defineProps({
   room: {
