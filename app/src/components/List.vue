@@ -10,10 +10,16 @@
               class="font-heading-secondary text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150 text-base">
               {{ item.name }}
             </h4>
-            <p class="text-sm text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150 max-w-[40ch] text-ellipsis">
+            <p
+              class="text-sm text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150 max-w-[40ch] text-ellipsis">
               {{ item.last_message ?? "No messages yet" }}
             </p>
           </router-link>
+          <context-menu @select="handleSelect" :divided="true">
+            <context-menu-item :select="editRoom" :disabled="true">Edit</context-menu-item>
+            <context-menu-item :select="deleteRoom" :disabled="true">Delete</context-menu-item>
+            <context-menu-item :select="leaveRoom" :disabled="true">Leave</context-menu-item>
+          </context-menu>
         </li>
       </template>
       <template v-for="item in friends" :key="item.id">
@@ -26,11 +32,13 @@
                 class="w-fit font-heading-secondary text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150 text-base">
                 {{ item.username }}
               </h4>
-              <p class="text-sm text-white text-opacity-50 group-hover:text-opacity-70 transition-all duration-150">
-                Click to start a chat
-              </p>
             </div>
           </button>
+          <context-menu @select="handleSelect" :divided="true">
+            <context-menu-item :select="blockUser">Block</context-menu-item>
+            <context-menu-item :select="unfriendUser">Unfriend</context-menu-item>
+            <context-menu-item :select="createNewRoomWith">New Room!</context-menu-item>
+          </context-menu>
         </li>
       </template>
     </ul>
@@ -49,6 +57,18 @@ import InputField from '@/components/InputField.vue'
 import axios from 'axios'
 import User from '@/components/User.vue'
 import { useRouter } from 'vue-router'
+import { 
+  blockUser, 
+  editRoom, 
+  unfriendUser, 
+  deleteRoom, 
+  leaveRoom, 
+  createNewRoomWith
+} from "@/utils/actions"
+
+function handleSelect(action: string) {
+  
+}
 
 const router = useRouter()
 

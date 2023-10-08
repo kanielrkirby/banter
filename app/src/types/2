@@ -1,0 +1,6 @@
+export const RelationStatusEnum = {
+  offline: 0,
+  online: 1,
+  busy: 2,
+  deleted: 3,
+}
