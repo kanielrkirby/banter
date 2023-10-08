@@ -67,7 +67,7 @@ import {
 } from "@/utils/actions"
 
 function handleSelect(action: string) {
-  
+  console.log(action)
 }
 
 const router = useRouter()
