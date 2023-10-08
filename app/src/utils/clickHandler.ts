@@ -1,5 +1,3 @@
-// the point of this is to avoid having several click listeners and just have one that handles everything
-
 type Subscriber = {
   element: HTMLElement,
   callback: (e: MouseEvent) => void,

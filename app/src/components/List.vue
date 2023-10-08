@@ -3,7 +3,8 @@
     <ul class="w-full flex flex-col gap-1 overflow-y-scroll h-0 grow overflow-x-hidden">
       <template v-for="item in rooms" :key="item.id">
         <li
-          class="rounded-md bg-primary-faded group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+          class="context-menu-anchor rounded-md bg-primary-faded group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]">
+          data-context-
           <router-link :to="`/room/${item.id}`" class="p-4 block space-y-2">
             <h4
               class="font-heading-secondary text-white text-opacity-80 group-hover:text-opacity-100 transition-all duration-150 text-base">
