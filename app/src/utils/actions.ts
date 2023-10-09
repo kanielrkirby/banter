@@ -1,4 +1,4 @@
-import { API_URL } from './constants';
+import { API_URL, API_WS_URL } from './constants';
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 
@@ -96,19 +96,36 @@ export const removeUserFromRoom = async (...args: [string, string]) => {
 };
 
 export const getRoomInfo = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.get(`${API_URL}/room/${id}/`, options);
+  return getResponse(res);
 };
 
 export const getRoomMessages = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.get(`${API_URL}/room/${id}/messages/`, options);
+  return getResponse(res);
 };
 
 export const getRoomUsers = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.get(`${API_URL}/room/${id}/profiles/`, options);
+  return getResponse(res);
 };
 
 export const connectToRoom = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const socket = new WebSocket(`${API_WS_URL}/ws/room/${id}/`);
+  socket.onopen = () => {
+    console.log("connected");
+  }
+  socket.onmessage = (e) => {
+    console.log(e.data);
+  }
+  socket.onclose = () => {
+    console.log("disconnected");
+  }
+  return socket;
 };
 
 export const sendMessage = async (...args: [string, string]) => {
