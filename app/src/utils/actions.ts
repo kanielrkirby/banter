@@ -72,7 +72,7 @@ export const leaveRoom = async (...args: [string]) => {
 
 export const createNewRoomWith = async (...args: [string, string[]]) => {
   const [name, profiles] = args;
-  const res = await axios.post(`${API_URL}/room/`, {
+  const res = await axios.post(`${API_URL}/rooms/`, {
     name,
     profiles,
   }, options);
@@ -80,10 +80,19 @@ export const createNewRoomWith = async (...args: [string, string[]]) => {
 };
 
 export const createNewRoom = async (...args: [string]) => {
+  const [name] = args;
+  const res = await axios.post(`${API_URL}/rooms/`, {
+    name,
+  }, options);
+  return getResponse(res);
 };
 
 export const removeUserFromRoom = async (...args: [string, string]) => {
-  //...
+  const [roomId, profileId] = args;
+  const res = await axios.delete(`${API_URL}/room/${roomId}/profile/${profileId}`, {
+    ...options,
+  });
+  return getResponse(res);
 };
 
 export const getRoomInfo = async (...args: [string]) => {

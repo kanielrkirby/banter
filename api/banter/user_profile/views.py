@@ -130,7 +130,12 @@ class ProfileRelationsView(generics.ListAPIView):
         Create a profile relation.
         """
         requester_profile = request.user
-        receiver_profile = Profile.objects.get(email=request.data['email'])
+        receiver_profile 
+        if 'id' in request.data:
+            receiver_profile = Profile.objects.get(id=request.data['id'])
+        elif 'email' in request.data:
+            receiver_profile = Profile.objects.get(email=request.data['email'])
+
         profile_relation, created = ProfileRelation.objects.update_or_create(
             requester_profile=requester_profile,
             receiver_profile=receiver_profile,

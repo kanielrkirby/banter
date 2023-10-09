@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 from rest_framework.pagination import CursorPagination
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
+from django.shortcuts import get_object_or_404
 
 class RoomView(APIView):
     """
@@ -25,10 +25,10 @@ class RoomView(APIView):
         """
         Get a room. Must be a member|admin|owner of the room.
         """
-        room = Room.objects.get(id=room_id)
+        room = get_object_or_404(Room, id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value, RoomProfileStatusEnum.member.value]):
             return Response(status=403)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
@@ -38,7 +38,7 @@ class RoomView(APIView):
         Create a room.
         """
         room = Room.objects.create(name=request.data['name'])
-        profile_room = RoomProfile.objects.create(profile=request.user, room=room, status=RoomProfileStatusEnum.owner)
+        profile_room = RoomProfile.objects.create(profile=request.user, room=room, status=RoomProfileStatusEnum.owner.value)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -46,10 +46,8 @@ class RoomView(APIView):
         """
         Update a room. Must be an admin|owner of the room.
         """
-        room = Room.objects.get_object_or_404(id=room_id)
-        if not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value]):
             return Response(status=403)
         room.name = request.data['name']
         room.save()
@@ -60,10 +58,10 @@ class RoomView(APIView):
         """
         Delete a room.
         """
-        room = Room.objects.get_object_or_404(id=room_id)
+        room = get_object_or_404(Room, id=room_id)
         if not room:
             return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner]):
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value]):
             return Response(status=403)
         room.status = RoomStatusEnum.deleted.value
         return Response(status=204)
@@ -77,11 +75,9 @@ class RoomProfileView(APIView):
         """
         Get a profile's status in a room.
         """
-        profile = Profile.objects.get(id=profile_id)
-        room = Room.objects.get(id=room_id)
-        if not profile or not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
+        profile = get_object_or_404(Profile, id=profile_id)
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value, RoomProfileStatusEnum.member.value]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         serializer = RoomProfileSerializer(profile_room)
@@ -91,11 +87,9 @@ class RoomProfileView(APIView):
         """
         Update a profile's status in a room.
         """
-        profile = Profile.objects.get(id=profile_id)
-        room = Room.objects.get(id=room_id)
-        if not profile or not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
+        profile = get_object_or_404(Profile, id=profile_id)
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.status = request.data['status']
@@ -107,11 +101,9 @@ class RoomProfileView(APIView):
         """
         Remove a profile from a room.
         """
-        profile = Profile.objects.get(id=profile_id)
-        room = Room.objects.get(id=room_id)
-        if not profile or not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
+        profile = get_object_or_404(Profile, id=profile_id)
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value]):
             return Response(status=403)
         profile_room = RoomProfile.objects.get(profile=profile, room=room)
         profile_room.delete()
@@ -126,10 +118,8 @@ class RoomProfilesView(APIView):
         """
         Get all profiles in a room.
         """
-        room = Room.objects.get(id=room_id)
-        if not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin, RoomProfileStatusEnum.member]):
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value, RoomProfileStatusEnum.member.value]):
             return Response(status=403)
         profile_rooms = RoomProfile.objects.filter(room=room)
         serializer = RoomProfileSerializer(profile_rooms, many=True)
@@ -139,13 +129,11 @@ class RoomProfilesView(APIView):
         """
         Add a profile to a room.
         """
-        room = Room.objects.get(id=room_id)
-        if not room:
-            return Response(status=404)
-        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner, RoomProfileStatusEnum.admin]):
+        room = get_object_or_404(Room, id=room_id)
+        if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value]):
             return Response(status=403)
         profile = Profile.objects.get(id=request.data['profile'])
-        profile_room = RoomProfile.objects.create(profile=profile, room=room, status=RoomProfileStatusEnum.member)
+        profile_room = RoomProfile.objects.create(profile=profile, room=room, status=RoomProfileStatusEnum.member.value)
         serializer = RoomProfileSerializer(profile_room)
         return Response(serializer.data)
 
@@ -159,7 +147,7 @@ class MessageView(APIView):
         """
         Get a message.
         """
-        message = Message.objects.get(id=message_id)
+        message = get_object_or_404(Message, id=message_id)
         serializer = MessageSerializer(message)
         return Response(serializer.data)
 
@@ -167,7 +155,7 @@ class MessageView(APIView):
         """
         Update a message.
         """
-        message = Message.objects.get(id=message_id)
+        message = get_object_or_404(Message, id=message_id)
         message.body = request.data['body']
         message.save()
         serializer = MessageSerializer(message)
@@ -177,7 +165,7 @@ class MessageView(APIView):
         """
         Toggle the status of a message to deleted.
         """
-        message = Message.objects.get(id=message_id)
+        message = get_object_or_404(Message, id=message_id)
         message.deleted = True
         message.save()
         return Response(status=204)
@@ -196,9 +184,7 @@ class MessagesView(ListAPIView):
         """
         Get all messages in a room. Must be a member|admin|owner|muted of the room.
         """
-        room = Room.objects.get(id=room_id)
-        if not room:
-            return Response(status=404)
+        room = get_object_or_404(Room, id=room_id)
         if not RoomProfile.objects.filter(profile=request.user, room=room, status__in=[RoomProfileStatusEnum.owner.value, RoomProfileStatusEnum.admin.value, RoomProfileStatusEnum.member.value, RoomProfileStatusEnum.muted.value]):
             return Response(status=403)
         messages = Message.objects.filter(room=room)
