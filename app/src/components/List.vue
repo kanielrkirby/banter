@@ -17,8 +17,7 @@
       </li>
       <li v-for="item in friends" :key="item.id"
         class="rounded-md bg-primary-faded group hover:bg-opacity-80 transition-all duration-200 hover:scale-[102.5%]"
-        @contextmenu.prevent.stop="handleClickFriend($event, item)"
-      >
+        @contextmenu.prevent.stop="handleClickFriend($event, item)">
         <button @click="(e) => newRoom(e, item.id)" class="p-4 flex gap-2">
           <User :id="item.id" />
           <div class="flex flex-col gap-2">
@@ -76,7 +75,13 @@ const roomActions = ref<Option[]>([
   {
     name: "Edit",
     class: "editRoom",
-    action: editRoom
+    action: async (first: Parameters<typeof editRoom>[0]) => {
+      const newName = prompt("Enter new name")
+      if (newName) {
+        await editRoom(first, newName)
+      }
+    }
+
   },
   {
     name: "Delete",
@@ -119,17 +124,19 @@ function itemAdapter(item: any) {
   // we don't know what props will be included, so we have to check and exclude
   // the ones that aren't included
   const props = ["id", "name", "username", "email"]
-  const itemProps = Object.keys(item)
-  const includedProps = props.filter(prop => itemProps.includes(prop))
+  const itemProps = Object.entries(item)
+  const includedProps = props.filter(prop => itemProps.some(([key, value]) => key === prop))
+    .map(prop => itemProps.find(([key, value]) => key === prop)![1])
+    console.log("includedProps: ", includedProps)
   return includedProps
 }
 
-function executeActionRoom(option: Option) {
+function executeActionRoom({ option }: { option: Option }) {
   const item = roomContextMenu.value.item ?? friendContextMenu.value.item
   option.action(...itemAdapter(item))
 }
 
-function executeActionFriend(option: Option) {
+function executeActionFriend({ option }: { option: Option }) {
   const item = friendContextMenu.value.item
   option.action(...itemAdapter(item))
 }

@@ -23,7 +23,11 @@ export const blockUser = async (...args: [string]) => {
 };
 
 export const editRoom = async (...args: [string, string]) => {
-    //...
+    const [id, name] = args;
+    const res = await axios.put(`${API_URL}/room/${id}`, {
+        name,
+    }, options);
+    return getResponse(res);
 };
 
 export const unfriendUser = async (...args: [string]) => {
