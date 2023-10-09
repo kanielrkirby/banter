@@ -19,7 +19,15 @@ export const addFriend = async (...args: [string]) => {
 };
 
 export const blockUser = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.post(`${API_URL}/profile/relations/`, {
+    id,
+    status: "blocked",
+  }, options);
+  const response = getResponse(res);
+  const element = document.querySelector(`[data-id="${id}"]`) as HTMLElement
+  if (element) element.remove();
+  return response;
 };
 
 export const editRoom = async (...args: [string, string]) => {
