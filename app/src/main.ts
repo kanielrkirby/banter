@@ -3,7 +3,6 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import ContextMenu from 'add-context-menu'
 import ContextMenuItem from 'add-context-menu'
-import "./utils/contextMenu"
 
 import App from './App.vue'
 import router from './router'

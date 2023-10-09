@@ -1,5 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
+from django.utils.translation import gettext_lazy as _
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 

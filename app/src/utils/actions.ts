@@ -12,54 +12,68 @@ const getResponse = (res: AxiosResponse) => {
   }
 }
 
-export const actions = {
-  addFriend: async (id: string) => {
+export const addFriend = async (id: string) => {
     const res = await axios.post(`${API_URL}/friends/add`, {}, options);
-    return getResponse(res)
-  },
-  blockUser: async (id: string) => {
+    return getResponse(res);
+};
 
-  },
-  editRoom: async (id: string, name: string) => {
+export const blockUser = async (id: string) => {
+    //...
+};
 
-  },
-  unfriendUser: async (id: string) => {
+export const editRoom = async (id: string, name: string) => {
+    //...
+};
 
-  },
-  deleteRoom: async (id: string) => {
+export const unfriendUser = async (id: string) => {
+    //...
+};
 
-  },
-  leaveRoom: async (id: string) => {
+export const deleteRoom = async (id: string) => {
+    //...
+};
 
-  },
-  createNewRoomWith: async (name: string, id: string[]) => {
+export const leaveRoom = async (id: string) => {
+    //...
+};
 
-  },
-  createNewRoom: async (name: string) => {
+export const createNewRoomWith = async (name: string, id: string[]) => {
+    //...
+};
 
-  },
-  removeUserFromRoom: async (id: string, userId: string) => {
+export const createNewRoom = async (name: string) => {
+    //...
+};
 
-  },
-  getRoomInfo: async (id: string) => {
+export const removeUserFromRoom = async (id: string, userId: string) => {
+    //...
+};
 
-  },
-  getRoomMessages: async (id: string) => {
+export const getRoomInfo = async (id: string) => {
+    //...
+};
 
-  },
-  getRoomUsers: async (id: string) => {
+export const getRoomMessages = async (id: string) => {
+    //...
+};
 
-  },
-  connectToRoom: async (id: string) => {
+export const getRoomUsers = async (id: string) => {
+    //...
+};
 
-  },
-  sendMessage: async (id: string, message: string) => {
+export const connectToRoom = async (id: string) => {
+    //...
+};
 
-  },
-  getFriends: async () => {
+export const sendMessage = async (id: string, message: string) => {
+    //...
+};
 
-  },
-  getRooms: async () => {
+export const getFriends = async () => {
+    //...
+};
 
-  },
-}
+export const getRooms = async () => {
+    //...
+};
+
