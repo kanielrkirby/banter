@@ -18,6 +18,11 @@ export const addFriend = async (...args: [string]) => {
   return getResponse(res);
 };
 
+const removeById = (id: string) => {
+  const element = document.querySelector(`[data-id="${id}"]`) as HTMLElement
+  if (element) element.remove();
+}
+
 export const blockUser = async (...args: [string]) => {
   const [id] = args;
   const res = await axios.post(`${API_URL}/profile/relations/`, {
@@ -25,8 +30,7 @@ export const blockUser = async (...args: [string]) => {
     status: "blocked",
   }, options);
   const response = getResponse(res);
-  const element = document.querySelector(`[data-id="${id}"]`) as HTMLElement
-  if (element) element.remove();
+  removeById(id)
   return response;
 };
 
@@ -43,23 +47,39 @@ export const editRoom = async (...args: [string, string]) => {
 };
 
 export const unfriendUser = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.delete(`${API_URL}/profile/relation/${id}/`, options);
+  const response = getResponse(res);
+  removeById(id)
+  return response;
 };
 
 export const deleteRoom = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.delete(`${API_URL}/room/${id}/`, options);
+  const response = getResponse(res);
+  removeById(id)
+  return response;
 };
 
 export const leaveRoom = async (...args: [string]) => {
-  //...
+  const [id] = args;
+  const res = await axios.delete(`${API_URL}/room/${id}/`, options);
+  const response = getResponse(res);
+  removeById(id)
+  return response;
 };
 
 export const createNewRoomWith = async (...args: [string, string[]]) => {
-  //...
+  const [name, profiles] = args;
+  const res = await axios.post(`${API_URL}/room/`, {
+    name,
+    profiles,
+  }, options);
+  return getResponse(res);
 };
 
 export const createNewRoom = async (...args: [string]) => {
-  //...
 };
 
 export const removeUserFromRoom = async (...args: [string, string]) => {
