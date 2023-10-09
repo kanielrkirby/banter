@@ -12,16 +12,16 @@ const getResponse = (res: AxiosResponse) => {
   }
 }
 
-export const addFriend = async (...args: [string]) => {
-  id = args[0];
-  const res = await axios.post(`${API_URL}/friends/add`, {}, options);
-  return getResponse(res);
-};
-
 const removeById = (id: string) => {
   const element = document.querySelector(`[data-id="${id}"]`) as HTMLElement
   if (element) element.remove();
 }
+
+export const addFriend = async (...args: [string]) => {
+  const [id] = args;
+  const res = await axios.post(`${API_URL}/friends/add`, {}, options);
+  return getResponse(res);
+};
 
 export const blockUser = async (...args: [string]) => {
   const [id] = args;
@@ -129,15 +129,21 @@ export const connectToRoom = async (...args: [string]) => {
 };
 
 export const sendMessage = async (...args: [string, string]) => {
-  //...
+  const [id, message] = args;
+  const res = await axios.post(`${API_URL}/room/${id}/messages/`, {
+    message,
+  }, options);
+  return getResponse(res);
 };
 
 export const getFriends = async (...args: []) => {
-  //...
+  const res = await axios.get(`${API_URL}/friends/`, options);
+  return getResponse(res);
 };
 
 export const getRooms = async (...args: []) => {
-  //...
+  const res = await axios.get(`${API_URL}/profile/rooms/`, options);
+  return getResponse(res);
 };
 
 export default {
