@@ -26,7 +26,7 @@ import { defineProps } from 'vue'
 import { ref } from 'vue'
 
 type Profile = {
-  id: number
+  id: string
   username: string
   status: 'online' | 'offline' | 'busy'
 }
@@ -44,7 +44,7 @@ const { color, id, className } = defineProps({
     default: 'w-16',
   },
   id: {
-    type: Number,
+    type: String,
     required: true,
   },
 })

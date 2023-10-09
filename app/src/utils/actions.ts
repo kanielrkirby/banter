@@ -12,68 +12,87 @@ const getResponse = (res: AxiosResponse) => {
   }
 }
 
-export const addFriend = async (id: string) => {
+export const addFriend = async (...args: [string]) => {
+    id = args[0];
     const res = await axios.post(`${API_URL}/friends/add`, {}, options);
     return getResponse(res);
 };
 
-export const blockUser = async (id: string) => {
+export const blockUser = async (...args: [string]) => {
     //...
 };
 
-export const editRoom = async (id: string, name: string) => {
+export const editRoom = async (...args: [string, string]) => {
     //...
 };
 
-export const unfriendUser = async (id: string) => {
+export const unfriendUser = async (...args: [string]) => {
     //...
 };
 
-export const deleteRoom = async (id: string) => {
+export const deleteRoom = async (...args: [string]) => {
     //...
 };
 
-export const leaveRoom = async (id: string) => {
+export const leaveRoom = async (...args: [string]) => {
     //...
 };
 
-export const createNewRoomWith = async (name: string, id: string[]) => {
+export const createNewRoomWith = async (...args: [string, string[]]) => {
     //...
 };
 
-export const createNewRoom = async (name: string) => {
+export const createNewRoom = async (...args: [string]) => {
     //...
 };
 
-export const removeUserFromRoom = async (id: string, userId: string) => {
+export const removeUserFromRoom = async (...args: [string, string]) => {
     //...
 };
 
-export const getRoomInfo = async (id: string) => {
+export const getRoomInfo = async (...args: [string]) => {
     //...
 };
 
-export const getRoomMessages = async (id: string) => {
+export const getRoomMessages = async (...args: [string]) => {
     //...
 };
 
-export const getRoomUsers = async (id: string) => {
+export const getRoomUsers = async (...args: [string]) => {
     //...
 };
 
-export const connectToRoom = async (id: string) => {
+export const connectToRoom = async (...args: [string]) => {
     //...
 };
 
-export const sendMessage = async (id: string, message: string) => {
+export const sendMessage = async (...args: [string, string]) => {
     //...
 };
 
-export const getFriends = async () => {
+export const getFriends = async (...args: []) => {
     //...
 };
 
-export const getRooms = async () => {
+export const getRooms = async (...args: []) => {
     //...
 };
 
+export default {
+    addFriend,
+    blockUser,
+    editRoom,
+    unfriendUser,
+    deleteRoom,
+    leaveRoom,
+    createNewRoomWith,
+    createNewRoom,
+    removeUserFromRoom,
+    getRoomInfo,
+    getRoomMessages,
+    getRoomUsers,
+    connectToRoom,
+    sendMessage,
+    getFriends,
+    getRooms,
+}
