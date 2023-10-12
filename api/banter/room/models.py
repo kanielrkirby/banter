@@ -3,6 +3,7 @@ from django.db.models import Q
 from .enums import RoomProfileStatusEnum
 import uuid
 from django.utils import timezone
+from .enums import RoomStatusEnum
 
 class Room(models.Model):
     """
@@ -16,6 +17,8 @@ class Room(models.Model):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # room is an int based on the RoomStatusEnum
+    status = models.IntegerField(choices=[(tag.value, tag.name) for tag in RoomStatusEnum], default=RoomStatusEnum.active.value)
 
     class Meta:
         ordering = ['-created_at']
