@@ -51,5 +51,3 @@ alias banter="docker compose -f docker-compose.base.yml -f docker-compose.dev.ym
 ## Contributing
 
 This is a personal project meant to learn, and isn't meant to be expanded! But if you find this useful for whatever reason, feel free to fork it to your own repo!
-
-This is my portfolio, sorry!
