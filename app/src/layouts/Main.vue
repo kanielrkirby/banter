@@ -1,14 +1,11 @@
 <template>
-  <div class="h-full relative flex flex-col">
-    <Header />
-    <div class="w-full h-full flex gap-2">
-      <List />
-      <slot></slot>
-    </div>
+  <Sidebar />
+  <div class="flex">
+    <slot />
   </div>
 </template>
 
 <script lang="ts" setup>
-import Header from "@/components/Header.vue";
-import List from "@/components/List.vue";
+import Sidebar from "@/components/Sidebar.vue";
+//import Conversations from "@/components/Conversations.vue";
 </script>
