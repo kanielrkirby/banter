@@ -123,6 +123,15 @@ module.exports = {
           fontSize: '1rem',
         },
       })
+
+      addComponents({
+        '.link': {
+          "@apply text-primary-400 relative hover:scale-105 transition-all duration-150 after:absolute after:content-[''] after:left-0 after:bottom-0 after:rounded-full after:h-0.5 after:w-0 hover:after:w-full after:bg-primary-400 after:transition-all after:duration-150": ''
+        },
+        '.btn': {
+          "@apply bg-primary-500 text-black px-2 py-3 rounded-md border-black border-2 hover:scale-110 hover:bg-black hover:text-primary-400 transition-all duration-150": ''
+        },
+      })
     }
   ],
 }
