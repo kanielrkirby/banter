@@ -22,7 +22,7 @@
       required
       autocomplete="password"
     />
-    <a href="/signup" class="link-primary-accent">Need an account?</a>
+    <a href="/signup" class="text-primary-400 relative hover:scale-105 transition-all duration-150 after:absolute after:content-[''] after:left-0 after:bottom-0 after:rounded-full after:h-0.5 after:w-0 hover:after:w-full after:bg-primary-400 after:transition-all after:duration-150">Need an account?</a>
     <button class="btn-secondary-accent" type="submit">Login</button>
   </CardLayout>
 </template>
