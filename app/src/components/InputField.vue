@@ -6,7 +6,7 @@
     </label>
     <input :type="type" :name="name" :id="id" :value="modelValue"
       :maxlength="maxlength" :minlength="minlength" :required="required"
-      @focus="selected = true" @blur="selected = false"
+      @focus="toggle" @blur="toggle"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       class="bg-card-950 px-2 py-3 rounded-sm font-medium w-full" />
   </div>
@@ -17,7 +17,13 @@ import { defineProps, ref } from "vue";
 
 const selected = ref(false);
 
-defineProps<{
+const toggle = () => {
+  if (props.modelValue === "") {
+    selected.value = !selected.value;
+  }
+}
+
+const props = defineProps<{
   modelValue: string;
   label: string;
   type: string;
