@@ -4,8 +4,8 @@
     <InputField v-model="email" label="Email" type="email" name="email" id="email" maxlength="40" minlength="3" required autocomplete="email" />
     <InputField v-model="password" label="Password" type="password" name="password" id="password" maxlength="40" minlength="8" required autocomplete="password" />
     <InputField v-model="confirmPassword" label="Confirm Password" type="password" name="confirm-password" id="confirm-password" maxlength="40" minlength="8" required autocomplete="password" />
-    <a class="link-primary-accent" href="/login">Already have an account?</a>
-    <button class="btn-secondary-accent" type="submit">Sign Up</button>
+    <a class="link" href="/login">Already have an account?</a>
+    <button class="btn" type="submit">Sign Up</button>
   </CardLayout>
 </template>
 
