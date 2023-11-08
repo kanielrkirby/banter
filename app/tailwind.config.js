@@ -91,10 +91,10 @@ module.exports = {
     function({ addComponents, addBase, addUtilities, matchComponents }) {
       addBase({
         'h1,h2,h3,h4,h5,h6': {
-          fontFamily: 'Rye, serif',
+          fontFamily: 'Offside, serif',
         },
         '*,*::before,*::after': {
-          fontFamily: 'Lato, sans-serif',
+          fontFamily: 'Noto Sans, sans-serif',
         },
         '*::-webkit-scrollbar,*::-webkit-scrollbar-corner': {
           backgroundColor: 'transparent',
