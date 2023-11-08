@@ -4,9 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Lato', 'sans-serif'],
-        heading: ['Rye', 'serif'],
-        'heading-secondary': ['Inknut Antiqua', 'serif'],
+        body: ['Noto Sans', 'sans-serif'],
+        heading: ['Offside', 'serif'],
       },
       colors: {
         fg: "#000000",
@@ -122,22 +121,6 @@ module.exports = {
         },
         h6: {
           fontSize: '1rem',
-        },
-      })
-      addComponents({
-        '.btn-secondary-accent': {
-          "@apply px-4 py-3 bg-gradient-to-br from-accent to-accent-dark after:absolute relative after:bg-gradient-to-tr after:from-accent-dark after:to-accent hover:after:opacity-100 after:opacity-0 after:content-[''] after:w-full after:h-full after:transition-all after:duration-300 after:left-0 after:top-0 border-slate-900 border-4 rounded-sm text-black text-opacity-80 hover:scale-105 transition-all duration-150 hover:text-opacity-95 font-heading-secondary font-black after:-z-10": ''
-        },
-        '.btn-accent': {
-          "@apply text-sm px-2 py-1 bg-gradient-to-br from-secondary-accent to-secondary-accent-dark after:absolute relative after:bg-gradient-to-tr after:from-secondary-accent-dark after:to-secondary-accent hover:after:opacity-100 after:rounded-md after:opacity-0 after:content-[''] after:w-full after:h-full after:transition-all after:duration-300 after:left-0 after:top-0 rounded-md text-black text-opacity-80 hover:scale-105 transition-all duration-150 hover:text-opacity-95 font-heading-secondary font-black after:-z-10": ''
-        },
-        '.link-primary-accent': {
-          "@apply text-secondary-accent self-start text-sm hover:underline hover:brightness-125 transition-all duration-100": ''
-        },
-        '.shadow-gradient': {
-          ':after': {
-            "@apply absolute inset-0 rounded-md bg-[--tw-gradient-from] bg-gradient-to-br from-[--tw-gradient-from] to-[--tw-gradient-to] filter blur-3xl opacity-50 z-[-1] transition-all duration-300": ''
-          }
         },
       })
     }
