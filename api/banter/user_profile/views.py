@@ -129,8 +129,9 @@ class ProfileRelationsView(generics.ListAPIView):
         """
         status = self.request.query_params.get('status', None)
         queryset = ProfileRelation.objects.all()
-        if status is not None:
-            queryset = queryset.filter(status=status, requester_profile=self.request.user)
+        if status is None:
+            return Response(status=400)
+        queryset = queryset.filter(status=status, requester_profile=self.request.user)
         profile_ids = queryset.values_list('receiver_profile_id', flat=True)
         profiles = Profile.objects.filter(id__in=profile_ids).annotate(
             invite_sent_at=F('receiver_relations__created_at')
