@@ -120,6 +120,8 @@ class ProfileRelationsView(generics.ListAPIView):
         Get all profile relations.
         """
         status = self.request.query_params.get('status', None)
+        print("status")
+        print(status)
         queryset = ProfileRelation.objects.all()
         if status is not None:
             queryset = queryset.filter(status=status)

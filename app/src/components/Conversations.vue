@@ -22,7 +22,6 @@ import { conversations } from "@/stores/conversations";
 import { addFriend } from "@/utils/actions";
 
 const input = document.getElementById("add-friend") as HTMLInputElement;
-const container = document.getElementById("add-friend-container") as HTMLDivElement;
 
 const send = async () => {
   try {

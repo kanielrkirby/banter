@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import socket from './socket'
 import axios from 'axios'
+import { RelationStatusEnum } from "../types/StatusEnum"
 
 type Invite = {
   id: number
@@ -11,8 +12,9 @@ export const invites = ref<Invite[]>([])
 
   ; (async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/relations?status=received/`,
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/relations/?status=${RelationStatusEnum.received}`,
         { withCredentials: true })
+      console.log(response)
       const data = response.data
       console.log(data)
       if (data.id !== null && data.id !== undefined) {

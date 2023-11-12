@@ -10,7 +10,7 @@ const removeById = (id: string) => {
 
 export const addFriend = async (...args: [string]) => {
   const [email] = args;
-  const res = await axios.post(`${API_URL}/profile/relations/?status=requested/`, {
+  const res = await axios.post(`${API_URL}/profile/relations/?status=requested`, {
     email,
   }, options);
   return res;
@@ -126,7 +126,7 @@ export const sendMessage = async (...args: [string, string]) => {
 };
 
 export const getFriends = async (...args: []) => {
-  const res = await axios.get(`${API_URL}/profile/relations/?status=friend/`, options);
+  const res = await axios.get(`${API_URL}/profile/relations/?status=friend`, options);
   return res;
 };
 
