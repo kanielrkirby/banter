@@ -130,7 +130,7 @@ class ProfileRelationsView(generics.ListAPIView):
         status = self.request.query_params.get('status', None)
         queryset = ProfileRelation.objects.all()
         if status is not None:
-            queryset = queryset.filter(status=status, receiver_profile=self.request.user)
+            queryset = queryset.filter(status=status, requester_profile=self.request.user)
         profile_ids = queryset.values_list('receiver_profile_id', flat=True)
         profiles = Profile.objects.filter(id__in=profile_ids).annotate(
             invite_sent_at=F('receiver_relations__created_at')
@@ -144,6 +144,12 @@ class ProfileRelationsView(generics.ListAPIView):
         requester_profile = request.user
         receiver_profile = None
 
+        status = request.query_params.get('status', None)
+        if status is None:
+            return Response(status=400)
+        if type(status) is str:
+            status = ProfileRelationStatusEnum[status].value
+            print(status)
         if 'id' in request.data:
             receiver_profile = Profile.objects.get(id=request.data['id'])
         elif 'email' in request.data:
@@ -152,16 +158,23 @@ class ProfileRelationsView(generics.ListAPIView):
         profile_relation, created = ProfileRelation.objects.update_or_create(
             requester_profile=requester_profile,
             receiver_profile=receiver_profile,
-            defaults={'status': ProfileRelationStatusEnum.requested.value}
+            defaults={'status': status}
         )
 
-        reverse_profile_relation, created = ProfileRelation.objects.update_or_create(
-            requester_profile=receiver_profile,
-            receiver_profile=requester_profile,
-            defaults={'status': ProfileRelationStatusEnum.received.value}
-        )
+        try:
+            reverse_profile_relation = ProfileRelation.objects.get(
+                requester_profile=receiver_profile,
+                receiver_profile=requester_profile,
+            )
+        except ProfileRelation.DoesNotExist:
+            if status == ProfileRelationStatusEnum.requested.value:
+                reverse_profile_relation = ProfileRelation.objects.create(
+                    requester_profile=receiver_profile,
+                    receiver_profile=requester_profile,
+                    defaults={'status': ProfileRelationStatusEnum.received.value}
+                )
 
-        if reverse_profile_relation.status == ProfileRelationStatusEnum.friend.value or reverse_profile_relation.status == ProfileRelationStatusEnum.requested.value:
+        if int(reverse_profile_relation.status) == ProfileRelationStatusEnum.requested.value and profile_relation.status == ProfileRelationStatusEnum.requested.value:
             profile_relation.status = ProfileRelationStatusEnum.friend.value
             profile_relation.save()
             reverse_profile_relation.status = ProfileRelationStatusEnum.friend.value

@@ -16,6 +16,14 @@ export const addFriend = async (...args: [string]) => {
   return res;
 };
 
+export const rejectFriend = async (...args: [string]) => {
+  const [email] = args;
+  const res = await axios.post(`${API_URL}/profile/relations/?status=rejected`, {
+    email
+  }, options);
+  return res;
+}
+
 export const blockUser = async (...args: [string]) => {
   const [id] = args;
   const res = await axios.post(`${API_URL}/profile/relations/`, {

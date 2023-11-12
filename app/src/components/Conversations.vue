@@ -1,5 +1,5 @@
 <template>
-  <span v-for="conversation in conversations.value">
+  <span v-for="conversation in conversations">
     {{ conversation.name }}
   </span>
 </template>
