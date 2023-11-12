@@ -4,10 +4,12 @@ import router from '../router';
 
 const isAuthenticated = ref(false);
 
-const user = reactive<{
+export type Profile = {
   id: number | null;
   username: string;
-}>({
+}
+
+const user = reactive<Profile>({
   id: null,
   username: '',
 });
@@ -28,7 +30,7 @@ async function refresh() {
     if (data.user.id !== null && data.user.id !== undefined) {
       loginUser(user as { id: number; username: string });
     } else {
-      throw new Error('User is not authenticated');
+      throw new Error('Profile is not authenticated');
     }
   } catch (err) {
     console.log(err);
@@ -58,7 +60,7 @@ async function checkAuth() {
     if (data.id !== null && data.id !== undefined) {
       loginUser(data as { id: number; username: string });
     } else {
-      throw new Error('User is not authenticated');
+      throw new Error('Profile is not authenticated');
     }
   } catch (err) {
     console.log(err);

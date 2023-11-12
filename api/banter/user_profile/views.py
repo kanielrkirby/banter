@@ -113,8 +113,16 @@ class ProfileRelationsView(generics.ListAPIView):
     View for listing all profile relations and creating a new profile relation.
     """
     pagination_class = ProfileRelationsCursorPagination
-    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
+
+    class LocalProfileSerializer(ProfileSerializer):
+        def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            representation['invite_sent_at'] = instance.invite_sent_at.isoformat() if instance.invite_sent_at else None
+            return representation
+
+    serializer_class = LocalProfileSerializer
+
     def get_queryset(self):
         """
         Get all profile relations.
@@ -124,7 +132,9 @@ class ProfileRelationsView(generics.ListAPIView):
         if status is not None:
             queryset = queryset.filter(status=status)
         profile_ids = queryset.values_list('receiver_profile_id', flat=True)
-        profiles = Profile.objects.filter(id__in=profile_ids)
+        profiles = Profile.objects.filter(id__in=profile_ids).annotate(
+            invite_sent_at=F('receiver_relations__created_at')
+        )
         return profiles
 
     def post(self, request):

@@ -2,11 +2,10 @@ import { reactive } from 'vue'
 import socket from './socket'
 import axios from 'axios'
 import { RelationStatusEnum } from "../types/StatusEnum"
-import { watchEffect } from 'vue';
+import { type Profile } from "./user"
 
-type Invite = {
-  id: number
-  username: string
+interface Invite extends Profile {
+  invite_sent_at: string
 }
 
 export const invites = reactive<Invite[]>([])
@@ -18,19 +17,12 @@ export const invites = reactive<Invite[]>([])
       console.log(response)
       const data = response.data.results
       if (data !== null && data !== undefined && data.length > 0) {
-        console.log('HERE')
         invites.push(...data)
       }
     } catch (err) {
       console.log(err)
     }
   })()
-
-
-watchEffect(() => {
-  console.log("changed", invites);
-});
-
 
 socket.addEventListener('message', (e: MessageEvent) => {
   const data = JSON.parse(e.data)
