@@ -17,3 +17,5 @@ if (import.meta.env.MODE === 'development') {
     console.log(`Socket error: ${e}`)
   })
 }
+
+export default socket
