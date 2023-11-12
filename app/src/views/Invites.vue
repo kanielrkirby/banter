@@ -1,6 +1,5 @@
 <template>
   <Main type="invites">
-
   </Main>
 </template>
 

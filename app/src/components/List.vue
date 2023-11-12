@@ -1,7 +1,7 @@
 <template>
   <div class="h-full relative">
     <ul class="flex flex-col gap-2">
-      <slot />
+      <slot></slot>
     </ul>
     <div @click="(e) => ((e?.target as HTMLElement)?.querySelector('input') as HTMLElement)?.focus()"
       id="add-friend-container"

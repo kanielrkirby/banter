@@ -113,19 +113,19 @@ class ProfileRelationsView(generics.ListAPIView):
     View for listing all profile relations and creating a new profile relation.
     """
     pagination_class = ProfileRelationsCursorPagination
-    serializer_class = ProfileRelationSerializer
+    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
     def get_queryset(self):
         """
         Get all profile relations.
         """
         status = self.request.query_params.get('status', None)
-        print("status")
-        print(status)
         queryset = ProfileRelation.objects.all()
         if status is not None:
             queryset = queryset.filter(status=status)
-        return queryset
+        profile_ids = queryset.values_list('receiver_profile_id', flat=True)
+        profiles = Profile.objects.filter(id__in=profile_ids)
+        return profiles
 
     def post(self, request):
         """

@@ -15,5 +15,10 @@ import List from "@/components/List.vue";
 import Conversations from "@/components/Conversations.vue";
 import Invites from "@/components/Invites.vue";
 
-let type = "conversations";
+const { type } = defineProps({
+  type: {
+    type: String,
+    default: "conversations",
+  },
+});
 </script>
