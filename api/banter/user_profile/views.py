@@ -13,7 +13,9 @@ from room.models import Room, RoomProfile
 import os
 from django.core.paginator import Paginator
 from rest_framework.pagination import CursorPagination
-from django.db.models import F
+from django.db.models import F, Max
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 secure = os.environ.get('DJANGO_SECURE', False)
 
@@ -172,15 +174,28 @@ class ProfileRelationsView(generics.ListAPIView):
                 reverse_profile_relation = ProfileRelation.objects.create(
                     requester_profile=receiver_profile,
                     receiver_profile=requester_profile,
-                    defaults={'status': ProfileRelationStatusEnum.received.value}
+                    status=ProfileRelationStatusEnum.received.value,
                 )
 
+        profile_serializer = ProfileSerializer(requester_profile)
         if int(reverse_profile_relation.status) == ProfileRelationStatusEnum.requested.value and profile_relation.status == ProfileRelationStatusEnum.requested.value:
             profile_relation.status = ProfileRelationStatusEnum.friend.value
             profile_relation.save()
             reverse_profile_relation.status = ProfileRelationStatusEnum.friend.value
             reverse_profile_relation.save()
-
+        elif status == ProfileRelationStatusEnum.requested.value:
+            print("Sending friend request")
+            print(receiver_profile.id)
+            friend_request = profile_serializer.data
+            friend_request['to_profile_id'] = str(receiver_profile.id)
+            print(friend_request)
+            async_to_sync(get_channel_layer().group_send)(
+                f'friend_request_{str(receiver_profile.id)}',
+                {
+                    'type': 'friend_request',
+                    'friend_request': friend_request,
+                }
+            )
         serializer = ProfileRelationSerializer(profile_relation)
         return Response(serializer.data)
 
@@ -230,8 +245,16 @@ class ProfileRoomsView(generics.ListAPIView):
     View for listing all profile rooms and creating a new profile room.
     """
     pagination_class = ProfileRoomsCursorPagination
-    serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
+
+    class LocalRoomSerializer(RoomSerializer):
+        def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            representation['last_message'] = MessageSerializer(instance.last_message).data if instance.last_message else None
+            return representation
+
+    serializer_class = LocalRoomSerializer
+
     def get_queryset(self):
         """
         Get all profile rooms.
@@ -239,8 +262,9 @@ class ProfileRoomsView(generics.ListAPIView):
         profile = self.request.user
         room_ids = RoomProfile.objects.filter(profile=profile).values_list('room_id', flat=True)
         rooms = Room.objects.filter(id__in=room_ids)
-        for room in rooms:
-            room.last_message = room.messages.order_by('-created_at').first()
+        rooms = rooms.annotate(
+            last_message=Max('messages__created_at')
+        )
         return rooms
 
     def post(self, request):

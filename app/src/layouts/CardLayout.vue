@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full relative flex justify-center items-center overflow-hidden">
+  <div class="text-white w-full h-full relative flex justify-center items-center overflow-hidden">
     <main class="bg-card-900 px-8 py-12 rounded-md flex flex-col justify-center items-center gap-8 w-[24rem] max-w-[90%]">
       <h1>{{ title }}</h1>
       <form @submit.prevent="submit" class="flex flex-col gap-4 w-full items-center">

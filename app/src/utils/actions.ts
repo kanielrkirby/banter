@@ -69,7 +69,7 @@ export const leaveRoom = async (...args: [string]) => {
 
 export const createNewRoomWith = async (...args: [string, string[]]) => {
   const [name, profiles] = args;
-  const res = await axios.post(`${API_URL}/rooms/`, {
+  const res = await axios.post(`${API_URL}/room/`, {
     name,
     profiles,
   }, options);
@@ -78,7 +78,7 @@ export const createNewRoomWith = async (...args: [string, string[]]) => {
 
 export const createNewRoom = async (...args: [string]) => {
   const [name] = args;
-  const res = await axios.post(`${API_URL}/rooms/`, {
+  const res = await axios.post(`${API_URL}/room/`, {
     name,
   }, options);
   return res;
