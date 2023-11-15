@@ -1,10 +1,11 @@
-import { fileURLToPath, URL } from 'node:url'
+import { URL, fileURLToPath } from 'node:url'
 
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
+import tailwind from 'tailwindcss'
+import { defineConfig } from 'vite'
+import fs from 'fs'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,6 +27,10 @@ export default defineConfig({
     }
   },
   server: {
+    https: {
+      key: fs.readFileSync('./banter.key'),
+      cert: fs.readFileSync('./banter.cert'),
+    },
     host: '0.0.0.0',
     hmr: {
       host: `${process.env.FRONTEND_BASE}`,

@@ -3,6 +3,7 @@ import socket from './socket'
 import axios from 'axios'
 import { RelationStatusEnum } from "../types/StatusEnum"
 import { type Profile } from "./user"
+import notif from "./notif"
 
 interface Invite extends Profile {
   invite_sent_at: string
@@ -30,4 +31,5 @@ socket.addEventListener('message', (e: MessageEvent) => {
   if (friendRequest) {
     invites.push(friendRequest)
   }
+  notif.add()
 })
