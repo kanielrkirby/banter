@@ -26,7 +26,8 @@ export const invites = reactive<Invite[]>([])
 
 socket.addEventListener('message', (e: MessageEvent) => {
   const data = JSON.parse(e.data)
-  if (data.type === 'INVITE') {
-    invites.push(data.invite)
+  const friendRequest = data.friend_request
+  if (friendRequest) {
+    invites.push(friendRequest)
   }
 })
